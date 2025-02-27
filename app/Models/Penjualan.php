@@ -9,7 +9,8 @@ class Penjualan extends Model {
     use HasFactory;
 
     protected $table = 'penjualan';
-    protected $fillable = ['user_id', 'total_harga', 'metode_pembayar', 'status_pembayaran'];
+    // protected $fillable = ['user_id', 'total_harga', 'metode_pembayar', 'status_pembayaran'];
+    protected $guarded = [];
 
     public function details()
     {

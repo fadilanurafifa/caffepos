@@ -16,7 +16,6 @@ class KategoriController extends Controller
     // Menyimpan kategori ke database
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'nama_kategori' => 'required|unique:kategori|max:100',
         ]);

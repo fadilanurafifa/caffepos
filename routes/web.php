@@ -35,7 +35,7 @@ Route::middleware([RoleMiddleware::class . ':kasir'])->group(function () {
 Route::get('/', function () {
     return Auth::check() ? redirect()->route('dashboard') : redirect()->route('admin.login');
 });
-Route::get('/dashboard', [DashboardController::class,'indexPage'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'indexPage'])->name('dashboard');
 
 // login
 Route::get('/admin/login', [AuthController::class, 'showLoginForm'])->name('admin.login');

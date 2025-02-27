@@ -213,50 +213,58 @@
         }
 
         function simpanTransaksi() {
-    let pelangganId = document.getElementById("pelanggan").value;
-    let checkoutData = JSON.parse(localStorage.getItem("checkoutData")) || [];
+            let pelangganId = document.getElementById('pelanggan').value;
+            // let metodePembayaran = document.getElementById('metode_pembayaran').value;
 
-    if (checkoutData.length === 0) {
-        alert("Keranjang masih kosong!");
-        return;
-    }
+            if (keranjang.length === 0) {
+                alert("Keranjang masih kosong!");
+                return;
+            }
 
-    fetch("/simpan-transaksi", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-        },
-        body: JSON.stringify({
-            pelanggan_id: pelangganId,
-            items: checkoutData,
-        }),
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        if (data.success) {
-            alert("Transaksi berhasil disimpan!");
-            localStorage.removeItem("checkoutData");
-            window.location.href = "/dashboard";
-        } else {
-            alert("Gagal menyimpan transaksi!");
+            let produkData = keranjang.map(item => ({
+                produk_id: item.id,
+                jumlah: item.jumlah
+            }));
+
+            let requestData = {
+                pelanggan_id: pelangganId,
+                produk: produkData,
+                // metode_pembayaran: metodePembayaran
+            };
+
+            console.log("Data yang dikirim:", requestData); // Debugging sebelum dikirim
+
+            fetch("{{ route('penjualan.store') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`Transaksi berhasil!\nNo Faktur: ${data.no_faktur}\nTotal Bayar: Rp ${data.total_bayar}`);
+                        location.reload();
+                    } else {
+                        alert("Gagal: " + data.error);
+                    }
+                })
+                .catch(err => console.error("Error:", err));
         }
-    })
-    .catch((error) => console.error("Error:", error));
-}
-
     </script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-    let checkoutData = JSON.parse(localStorage.getItem("checkoutData")) || [];
-    let keranjangTable = document.getElementById("keranjang");
-    let totalBayar = 0;
+        document.addEventListener("DOMContentLoaded", function() {
+            let checkoutData = JSON.parse(localStorage.getItem("checkoutData")) || [];
+            let keranjangTable = document.getElementById("keranjang");
+            let totalBayar = 0;
 
-    checkoutData.forEach((item) => {
-        let subtotal = item.harga * item.jumlah;
-        totalBayar += subtotal;
+            checkoutData.forEach((item) => {
+                let subtotal = item.harga * item.jumlah;
+                totalBayar += subtotal;
 
-        let row = `
+                let row = `
             <tr>
                 <td>${item.nama_produk}</td>
                 <td>Rp${item.harga.toLocaleString()}</td>
@@ -265,11 +273,10 @@
                 <td><button class="btn btn-danger btn-sm" onclick="hapusItem('${item.id}')">Hapus</button></td>
             </tr>
         `;
-        keranjangTable.innerHTML += row;
-    });
+                keranjangTable.innerHTML += row;
+            });
 
-    document.getElementById("totalBayar").innerText = totalBayar.toLocaleString();
-});
-
+            document.getElementById("totalBayar").innerText = totalBayar.toLocaleString();
+        });
     </script>
 @endpush

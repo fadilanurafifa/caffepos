@@ -30,26 +30,25 @@ class PenjualanController extends Controller
         Log::info('Request Penjualan:', $request->all());
 
         $validated = $request->validate([
-            'pelanggan_id' => 'required|exists:pelanggan,id',
+            'pelanggan_id' => 'required',
             'produk' => 'required|array|min:1',
-            'produk.*.produk_id' => 'required|exists:produk,id',
+            'produk.*.produk_id' => 'required',
             'produk.*.jumlah' => 'required|integer|min:1',
         ]);
 
         DB::beginTransaction();
-
         try {
-            $noFaktur = 'INV-' . now()->format('YmdHis') . rand(100, 999);
 
             $totalBayar = 0;
+            $no_faktur = Penjualan::latest()->first()->no_faktur ?? 0;
 
             $penjualan = Penjualan::create([
-                'no_faktur' => $noFaktur,
+                'no_faktur' => $no_faktur + 1,
                 'tgl_faktur' => now(),
                 'total_bayar' => 0,
                 'pelanggan_id' => $validated['pelanggan_id'],
-                'user_id' => Auth::id(),
-                'metode_pembayaran' => $request->metode_pembayaran ?? 'cash',
+                'user_id' => 1,
+                'metode_pembayar' => $request->metode_pembayaran ?? 'cash',
             ]);
 
             foreach ($validated['produk'] as $item) {
@@ -59,9 +58,9 @@ class PenjualanController extends Controller
                 $totalBayar += $subTotal;
 
                 DetailPenjualan::create([
-                    'penjualan_id' => $penjualan->id,
+                    'penjualan_id' => $penjualan->id ?? null,
                     'produk_id' => $item['produk_id'],
-                    'harga_jual' => $hargaJual,
+                    // 'harga_jual' => $hargaJual,
                     'jumlah' => $item['jumlah'],
                     'sub_total' => $subTotal,
                 ]);
@@ -74,7 +73,7 @@ class PenjualanController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Transaksi berhasil disimpan!',
-                'no_faktur' => $noFaktur,
+                'no_faktur' => $penjualan->no_faktur,
                 'total_bayar' => $totalBayar
             ]);
         } catch (\Exception $e) {
