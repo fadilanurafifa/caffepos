@@ -21,8 +21,6 @@ class ProdukController extends Controller
             })
             ->get();
 
-            // dd($produk);
-
         return view('admin.produk.index', compact('produk', 'kategori'));
     }
 
@@ -34,10 +32,6 @@ class ProdukController extends Controller
             'foto' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
             'kategori_id' => 'nullable|exists:kategori,id',
         ]);
-
-        // dd($request->all());
-
-        // Produk::create($request->all());
 
         // Menangani upload foto
         if ($request->hasFile('foto')) {
@@ -89,17 +83,21 @@ class ProdukController extends Controller
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
-
-        // Hapus foto produk jika ada
+    
+        // Hapus foto jika ada
         if ($produk->foto) {
-            Storage::delete('public/' . $produk->foto);
+            $filePath = public_path('assets/produk_fotos/' . $produk->foto);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
         }
-
+    
         $produk->delete();
-
+    
         return response()->json([
             'status' => 'success',
             'message' => 'Produk berhasil dihapus!'
         ]);
     }
+    
 }

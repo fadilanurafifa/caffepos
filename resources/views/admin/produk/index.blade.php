@@ -1,9 +1,9 @@
 @extends('admin.layouts.base')
 
-@section('title', 'Produk')
+@section('title', 'Manajemen Produk')
 
 @section('content')
-    @include('style')
+@include('style')
 
     <style>
         .produk-container {
@@ -13,70 +13,50 @@
             justify-content: flex-start;
             margin-top: 20px;
         }
-
         .produk-card {
             width: 140px;
-            /* Lebih kecil dari sebelumnya */
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             text-align: center;
             padding: 10px;
-            /* Padding dikurangi */
             cursor: pointer;
             transition: transform 0.2s ease-in-out;
         }
-
         .produk-card:hover {
             transform: scale(1.05);
         }
-
         .produk-card img {
             width: 100%;
             height: 100px;
-            /* Ukuran gambar lebih kecil */
             object-fit: cover;
             border-radius: 5px;
         }
-
         .produk-card h5 {
             margin: 8px 0;
             font-size: 14px;
-            /* Ukuran font dikurangi */
             font-weight: bold;
         }
-
         .produk-card p {
             font-size: 12px;
-            /* Lebih kecil */
             color: #666;
         }
-
-        /* Keranjang belanja */
         .card {
             width: 100%;
             max-width: 320px;
-            /* Pastikan tidak terlalu lebar */
         }
-
-        /* Header keranjang */
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px;
         }
-
-        /* List dalam keranjang */
         .cart-list {
             max-height: 250px;
-            /* Batas tinggi agar tidak terlalu panjang */
             overflow-y: auto;
             padding: 0;
         }
-
-        /* Produk dalam keranjang */
         .cart-list li {
             display: flex;
             align-items: center;
@@ -84,16 +64,12 @@
             padding: 8px;
             font-size: 14px;
         }
-
-        /* Gambar produk */
         .cart-list img {
             width: 40px;
             height: 40px;
             object-fit: cover;
             border-radius: 5px;
         }
-
-        /* Tombol tambah/kurang/hapus */
         .cart-list button {
             width: 28px;
             height: 28px;
@@ -103,66 +79,47 @@
             justify-content: center;
             font-size: 12px;
         }
-
-        /* Tombol Save Order */
         #save-order {
             font-size: 12px;
             padding: 5px 8px;
         }
-
-        /* Input jumlah */
         .cart-list input {
             width: 35px;
             text-align: center;
             font-size: 12px;
             padding: 2px;
         }
-
-        /* Bagian total harga */
         .card-footer {
             font-size: 14px;
             padding: 10px;
         }
-
-        /* Tombol di bagian bawah */
         .card-footer .btn {
             font-size: 13px;
             padding: 8px;
             flex: 1;
-            /* Agar tombol tetap proporsional */
             white-space: nowrap;
-            /* Supaya teks tidak turun */
         }
-
-        /* Menyesuaikan tombol dalam satu baris */
         .d-flex.gap-2 {
             display: flex;
             gap: 5px;
             flex-wrap: nowrap;
         }
-
-        /* Ukuran subtotal */
         #subtotal {
             font-size: 16px;
             font-weight: bold;
         }
-
         .btn-custom {
             height: 38px;
-            /* Samakan tinggi semua tombol */
             font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0 15px;
         }
-
         .form-control-custom {
             height: 38px;
-            /* Samakan tinggi dengan tombol */
             font-size: 14px;
         }
-
         .input-group {
             max-width: 250px;
         }
@@ -175,7 +132,17 @@
                 <i class="fas fa-plus"></i> Tambah Produk
             </button>
         </div>
-
+        @if(session('success'))
+        <script>
+            Swal.fire({
+                title: "Sukses!",
+                text: "{{ session('success') }}",
+                icon: "success",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK"
+            });
+        </script>
+        @endif        
         <!-- Filter Kategori dan Input Pencarian (Sejajar) -->
         <div class="row mb-2">
             <div class="col-lg-9">
@@ -204,70 +171,38 @@
         </div>
         <div class="row">
             <!-- Daftar Produk (Kiri) -->
-            <div class="row">
-                <!-- Daftar Produk (Kiri) -->
-                <div class="col-lg-8">
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-                        @foreach ($produk as $prd)
-                            <div class="col produk-card" data-id="{{ $prd->id }}"
-                                data-nama="{{ strtolower($prd->nama_produk) }}" data-harga="{{ $prd->harga }}"
-                                data-foto="{{ asset('assets/produk_fotos/' . $prd->foto) }}"
-                                data-kategori="{{ strtolower($prd->kategori ? $prd->kategori->nama_kategori : 'tanpa kategori') }}">
-
-                                <div class="card border-0 shadow-sm h-100">
-                                    <img src="{{ asset('assets/produk_fotos/' . $prd->foto) }}"
-                                        class="card-img-top img-fluid rounded-top"
-                                        style="height: 120px; object-fit: cover;">
-                                    <div class="card-body text-center p-2">
-                                        <h6 class="card-title text-truncate">{{ $prd->nama_produk }}</h6>
-                                        <h6 class="card-title text-truncate">Stok: {{ $prd->stok }}</h6>
-                                        <h5 class="text-muted mt-2" style="font-size: 14px;">
-                                            {{ $prd->kategori ? $prd->kategori->nama_kategori : 'Tanpa Kategori' }}
-                                        </h5>
-                                        <p class="card-text text-danger fw-bold">
-                                            Rp{{ number_format($prd->harga, 0, ',', '.') }}</p>
-                                        <button class="btn btn-success btn-sm addToCart">
-                                            <i class="fas fa-cart-plus"></i> Tambah
-                                        </button>
-                                    </div>
+            <div class="col-lg-12">
+                <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 g-2">
+                    @foreach ($produk as $prd)
+                        <div class="col produk-card" data-id="{{ $prd->id }}"
+                            data-nama="{{ strtolower($prd->nama_produk) }}" data-harga="{{ $prd->harga }}"
+                            data-foto="{{ asset('assets/produk_fotos/' . $prd->foto) }}"
+                            data-kategori="{{ strtolower($prd->kategori ? $prd->kategori->nama_kategori : 'tanpa kategori') }}">
+            
+                            <div class="card border-0 shadow-sm h-100" style="max-width: 120px;">
+                                <img src="{{ asset('assets/produk_fotos/' . $prd->foto) }}"
+                                    class="card-img-top img-fluid rounded-top"
+                                    style="height: 100px; object-fit: cover;">
+                                <div class="card-body text-center p-1">
+                                    <h6 class="card-title text-truncate" style="font-size: 12px;">{{ $prd->nama_produk }}</h6>
+                                    <h6 class="card-title text-truncate" style="font-size: 12px;">Stok: {{ $prd->stok }}</h6>
+                                    <h5 class="text-muted mt-1" style="font-size: 10px;">
+                                        {{ $prd->kategori ? $prd->kategori->nama_kategori : 'Tanpa Kategori' }}
+                                    </h5>
+                                    <p class="card-text text-danger fw-bold" style="font-size: 12px;">
+                                        Rp{{ number_format($prd->harga, 0, ',', '.') }}</p>
+            
+                                    <!-- Tombol Hapus -->
+                                    <button class="btn btn-danger btn-sm btn-hapus" data-id="{{ $prd->id }}" style="font-size: 10px; padding: 2px 5px;">
+                                        <i class="fas fa-trash-alt"></i> Hapus
+                                    </button>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- Keranjang Belanja (Kanan) -->
-                <div class="col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-danger text-white">
-                            <h5 class="mb-0">Keranjang Belanja</h5>
                         </div>
-                        <div class="card-body">
-                            <ul id="cartList" class="list-group list-group-flush">
-                                <li class="list-group-item text-center text-muted">Keranjang kosong</li>
-                            </ul>
-                            <div class="mt-3 text-end">
-                                <strong>Total: Rp <span id="totalBayar">0</span></strong>
-                                @php
-                                    if ($produk->count() == 0) {
-                                        $ids = 0;
-                                    } else {
-                                        $ids = $produk->first()->id;
-                                    }
-                                    
-                                @endphp
-                                    <form action="{{ route('keranjang.add', $ids) }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="jumlah" value="1">
-                                        <button type="submit" class="btn btn-primary">Tambah ke Keranjang</button>
-                                    </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    @endforeach
+                </div>                    
             </div>
-
-        </div>
+        </div>              
     </div>
     <div class="modal fade" id="tambahProdukModal" tabindex="-1" aria-labelledby="tambahProdukLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -320,61 +255,8 @@
 @endsection
 
 @push('script')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Hapus Produk dengan SweetAlert
-        $('.hapusProduk').click(function(event) {
-            event.preventDefault();
-            let produkId = $(this).data('id');
-            let token = $('meta[name="csrf-token"]').attr('content');
-
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Produk akan dihapus secara permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/admin/produk/' + produkId,
-                        type: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': token
-                        },
-                        success: function(response) {
-                            if (response.status === 'success') {
-                                Swal.fire('Sukses!', response.message, 'success')
-                                    .then(() => {
-                                        location.reload();
-                                    });
-                            } else {
-                                Swal.fire('Gagal!', response.message, 'error');
-                            }
-                        }
-                    });
-                }
-            });
-        });
-        $(document).ready(function() {
-            $('.produk-card').click(function() {
-                let produkId = $(this).data('id');
-                let namaProduk = $(this).data('nama');
-                let harga = $(this).data('harga');
-                let foto = $(this).data('foto');
-                let kategori = $(this).data('kategori');
-
-                $('#detailNamaProduk').text(namaProduk);
-                $('#detailHargaProduk').text('Rp' + harga.toLocaleString('id-ID'));
-                $('#detailFotoProduk').attr('src', foto);
-                $('#detailKategoriProduk').text('Kategori: ' + kategori);
-
-                $('#detailProdukModal').modal('show');
-            });
-        });
-
         document.getElementById('kategoriFilter').addEventListener('change', function() {
             let selectedCategory = this.value.toLowerCase();
             document.querySelectorAll('.produk-card').forEach(function(card) {
@@ -432,117 +314,46 @@
             });
         });
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(document).ready(function() {
-            let cart = [];
-
-            function updateCart() {
-                let cartList = $('.cart-list');
-                cartList.empty();
-                let total = 0;
-
-                cart.forEach((item, index) => {
-                    let subtotal = item.harga * item.qty;
-                    total += subtotal;
-
-                    cartList.append(`
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <img src="${item.foto}" width="40" height="40">
-                    <span class="flex-grow-1 ms-2">${item.nama} x${item.qty}</span>
-                    <span class="fw-bold text-danger">Rp${subtotal.toLocaleString()}</span>
-                    <button class="btn btn-sm btn-outline-danger remove-item" data-index="${index}">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </li>
-            `);
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.btn-hapus').forEach(button => {
+                button.addEventListener('click', function () {
+                    let produkId = this.getAttribute('data-id');
+    
+                    Swal.fire({
+                        title: "Yakin ingin menghapus?",
+                        text: "Data tidak dapat dikembalikan setelah dihapus!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Ya, hapus!",
+                        cancelButtonText: "Batal"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/admin/produk/${produkId}`, {
+                                method: "DELETE",
+                                headers: {
+                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                    "Content-Type": "application/json"
+                                }
+                            }).then(response => response.json())
+                              .then(data => {
+                                  if (data.status === "success") {
+                                      Swal.fire("Terhapus!", "Produk telah dihapus.", "success")
+                                          .then(() => location.reload());
+                                  } else {
+                                      Swal.fire("Gagal!", "Terjadi kesalahan saat menghapus.", "error");
+                                  }
+                              }).catch(error => {
+                                  Swal.fire("Error!", "Tidak dapat terhubung ke server.", "error");
+                              });
+                        }
+                    });
                 });
-
-                $('#totalBayar').text(`Rp${total.toLocaleString()}`);
-            }
-
-            // Tambah ke Keranjang
-            $('.produk-card').click(function() {
-                let id = $(this).data('id');
-                let nama = $(this).data('nama');
-                let harga = $(this).data('harga');
-                let foto = $(this).data('foto');
-
-                let existingItem = cart.find(item => item.id === id);
-                if (existingItem) {
-                    existingItem.qty += 1;
-                } else {
-                    cart.push({
-                        id,
-                        nama,
-                        harga,
-                        foto,
-                        qty: 1
-                    });
-                }
-
-                updateCart();
-            });
-
-            // Hapus Item dari Keranjang
-            $(document).on('click', '.remove-item', function() {
-                let index = $(this).data('index');
-                cart.splice(index, 1);
-                updateCart();
-            });
-
-            // Checkout (simulasi)
-            $('#checkout').click(function() {
-                if (cart.length === 0) {
-                    alert('Keranjang kosong!');
-                    return;
-                }
-
-                alert('Checkout berhasil! Pesanan diproses.');
-                cart = [];
-                updateCart();
             });
         });
     </script>
-    <script>
-        let cart = [];
-
-        // Fungsi menambah produk ke keranjang
-        document.querySelectorAll('.addToCart').forEach(button => {
-            button.addEventListener('click', function() {
-                let card = this.closest('.produk-card');
-                let id = card.getAttribute('data-id');
-                let nama = card.getAttribute('data-nama');
-                let harga = parseInt(card.getAttribute('data-harga'));
-                let foto = card.getAttribute('data-foto');
-
-                let existingProduct = cart.find(item => item.id === id);
-                if (existingProduct) {
-                    existingProduct.qty += 1;
-                } else {
-                    cart.push({
-                        id,
-                        nama,
-                        harga,
-                        foto,
-                        qty: 1
-                    });
-                }
-
-                updateCart();
-            });
-        });
-
-        function checkout() {
-            let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
-
-            if (keranjang.length === 0) {
-                alert("Keranjang masih kosong!");
-                return;
-            }
-
-            localStorage.setItem("checkoutData", JSON.stringify(keranjang));
-            window.location.href = "/penjualan";
-        }
-    </script>
+    
 @endpush

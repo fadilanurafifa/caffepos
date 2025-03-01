@@ -10,7 +10,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
-    <title>SB Admin 2 - @yield('title')</title>
+    <title>Caffe Kasir - @yield('title')</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -86,13 +86,13 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBarang"
                 aria-expanded="true" aria-controls="collapseUtilities">
                 <i class="fas fa-box"></i> <!-- Ganti ikon di sini -->
-                <span>Barang</span>
+                <span>Manajemen Barang</span>
             </a>            
                 <div id="collapseBarang" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manajemen Barang</h6>
-                        <a class="collapse-item" href="{{ route('barang.index') }}">Sistem Barang</a>
+                        <h6 class="collapse-header">Pembelajaan Barang</h6>
+                        <a class="collapse-item" href="{{ route('barang.index') }}">Daftar Barang</a>
                     </div>
                 </div>
             </li>
@@ -151,7 +151,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePenjualan"
                 aria-expanded="true" aria-controls="collapsePenjualan">
                  <i class="fas fa-fw fa-shopping-cart"></i>
-                 <span>Penjualan</span>
+                 <span>Keranjang Produk</span>
              </a>             
                 <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">

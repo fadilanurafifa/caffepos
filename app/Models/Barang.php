@@ -13,33 +13,42 @@ class Barang extends Model
 
     protected $fillable = [
         'kode_barang',
-        'produk_id', 
+        'produk_id',
         'nama_barang',
         'kategori_id',
         'satuan',
         'harga_jual',
-        'stok'
+        'stok',
+        'tanggal_pembelian'
     ];
 
+    // Relasi ke Kategori
     public function kategori()
     {
         return $this->belongsTo(Kategori::class, 'kategori_id');
     }
+
+    // Relasi ke Produk
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id');
-    }
-    
-    // Relasi: Barang milik satu pemasok
-    public function pemasok() {
+    }    
+
+    // Relasi ke Pemasok
+    public function pemasok()
+    {
         return $this->belongsTo(Pemasok::class);
     }
-     // Relasi: Barang dapat masuk ke banyak transaksi penjualan
-     public function penjualan() {
+
+    // Relasi ke Penjualan (Many to Many)
+    public function penjualan()
+    {
         return $this->belongsToMany(Penjualan::class, 'detail_penjualan')
                     ->withPivot('jumlah', 'subtotal')
                     ->withTimestamps();
     }
+
+    // Relasi ke Detail Penjualan
     public function detail_penjualan()
     {
         return $this->hasMany(DetailPenjualan::class);

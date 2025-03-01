@@ -10,13 +10,12 @@
         background-color: #007bff;
         color: white;
         border-radius: 5px;
-        padding: 10px 20px;
+        padding: 8px 14px;
         font-size: 14px;
         border: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        width: 20%;
         margin-top: 20px;
         margin-left: 20px;
     }
@@ -201,6 +200,13 @@
 <script>
   $(document).ready(function() {
     $('#dataTable').DataTable();
+
+    $(document).ready(function() {
+    var table = $('#yourTableID').DataTable();
+
+    // Menambahkan placeholder ke input pencarian bawaan DataTables
+    $('.dataTables_filter input').attr('placeholder', 'Cari data member...');
+    });
 
     // Edit Pelanggan
     $(document).on('click', '.editPelanggan', function() {

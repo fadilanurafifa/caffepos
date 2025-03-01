@@ -6,24 +6,25 @@
 @include('style')
 
 <style>
-.btn-custom {
+ .btn-custom {
     background-color: #007bff; 
     color: white;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 14px;
     border: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 20px;
-    margin-left: 20px;
+    padding: 8px 14px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap; 
 }
-.btn-custom:hover {
-    background-color: #0056b3;
+.btn-custom:hover,
+.btn-custom:focus,
+.btn-custom:active {
+    background-color: #007bff !important; 
+    color: white !important; 
+    box-shadow: none !important; 
+    outline: none !important; 
 }
 </style>
-
 <div class="container">
     <div class="card table-container">
         @if(session('success'))
@@ -93,7 +94,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nama_pemasok">Nama Pemasok</label>
-                        <input type="text" class="form-control" id="nama_pemasok" name="nama_pemasok" required>
+                        <input type="text" class="form-control" id="nama_pemasok" placeholder="Masukkan Nama Pemasok" name="nama_pemasok" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -136,39 +137,79 @@
 @endsection
 
 @push('script')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    $(document).ready(function() {
-        // Tambah Pemasok
-        $('#tambahPemasokForm').submit(function(event) {
-            event.preventDefault();
-            let nama_pemasok = $('#nama_pemasok').val();
+ $(document).ready(function() {
+    let dataTable = $('#dataTable').DataTable(); // Inisialisasi DataTable
     
-            $.ajax({
-                url: '/pemasok',
-                type: 'POST',
-                data: {_token: '{{ csrf_token() }}', nama_pemasok: nama_pemasok},
-                success: function(response) {
-                    location.reload();
+    $(document).ready(function() {
+    var table = $('#yourTableID').DataTable();
+
+    // Menambahkan placeholder ke input pencarian bawaan DataTables
+    $('.dataTables_filter input').attr('placeholder', 'Cari data pemasok...');
+    });
+
+    // Tambah Pemasok
+    $('#tambahPemasokForm').submit(function(event) {
+        event.preventDefault();
+        let formData = $(this).serialize(); // Mengambil data dari form
+
+        $.ajax({
+            url: '/pemasok',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Tambahkan data baru ke DataTable
+                    dataTable.row.add([
+                        response.data.id,
+                        response.data.nama_pemasok,
+                        `<button class="btn btn-warning btn-sm editPemasok" data-id="${response.data.id}" data-nama="${response.data.nama_pemasok}">
+                            <i class="fas fa-edit"></i> 
+                        </button>
+                        <button class="btn btn-danger btn-sm hapusPemasok" data-id="${response.data.id}">
+                            <i class="fas fa-trash"></i> 
+                        </button>`
+                    ]).draw(false); // Tambahkan dan perbarui tabel tanpa refresh
+
+                    $('#tambahPemasokModal').modal('hide'); // Tutup modal
+                    $('#tambahPemasokForm')[0].reset(); // Reset form
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses!',
+                        text: 'Pemasok berhasil ditambahkan!',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: response.message || 'Terjadi kesalahan!',
+                    });
                 }
-            });
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Gagal menambahkan pemasok. Silakan coba lagi.',
+                });
+            }
         });
     });
-    </script>
-
-<script>
-$(document).ready(function() {
-    $('#dataTable').DataTable();
 
     // Edit Pemasok
     $(document).on('click', '.editPemasok', function() {
         let id = $(this).data('id');
         let nama = $(this).data('nama');
-        
+
         $('#edit_id').val(id);
         $('#edit_nama_pemasok').val(nama);
         $('#editPemasokModal').modal('show');
@@ -177,16 +218,44 @@ $(document).ready(function() {
     $('#editPemasokForm').submit(function(event) {
         event.preventDefault();
         let id = $('#edit_id').val();
-        let nama = $('#edit_nama_pemasok').val();
+        let formData = $(this).serialize();
 
         $.ajax({
             url: '/pemasok/' + id,
             type: 'PUT',
-            data: {_token: '{{ csrf_token() }}', nama_pemasok: nama},
+            data: formData,
+            dataType: 'json',
             success: function(response) {
-                $('#nama-' + id).text(nama);
-                $('#editPemasokModal').modal('hide');
-                Swal.fire('Sukses!', response.message, 'success');
+                if (response.success) {
+                    // Perbarui data di DataTable
+                    let rowIndex = dataTable.row($(`button[data-id="${id}"]`).parents('tr')).index();
+                    dataTable.row(rowIndex).data([
+                        response.data.id,
+                        response.data.nama_pemasok,
+                        `<button class="btn btn-warning btn-sm editPemasok" data-id="${response.data.id}" data-nama="${response.data.nama_pemasok}">
+                            <i class="fas fa-edit"></i> 
+                        </button>
+                        <button class="btn btn-danger btn-sm hapusPemasok" data-id="${response.data.id}">
+                            <i class="fas fa-trash"></i> 
+                        </button>`
+                    ]).draw(false);
+
+                    $('#editPemasokModal').modal('hide'); // Tutup modal
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses!',
+                        text: 'Data pemasok berhasil diperbarui!',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: response.message || 'Terjadi kesalahan!',
+                    });
+                }
             }
         });
     });
@@ -210,11 +279,26 @@ $(document).ready(function() {
                     url: '/pemasok/' + id,
                     type: 'DELETE',
                     data: {_token: '{{ csrf_token() }}'},
+                    dataType: 'json',
                     success: function(response) {
-                        $('#row-' + id).fadeOut(500, function() {
-                            $(this).remove();
-                        });
-                        Swal.fire('Sukses!', response.message, 'success');
+                        if (response.success) {
+                            let rowIndex = dataTable.row($(`button[data-id="${id}"]`).parents('tr')).index();
+                            dataTable.row(rowIndex).remove().draw(false);
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sukses!',
+                                text: 'Data pemasok berhasil dihapus!',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: response.message || 'Terjadi kesalahan!',
+                            });
+                        }
                     }
                 });
             }

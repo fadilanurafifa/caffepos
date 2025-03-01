@@ -1,25 +1,29 @@
 @extends('admin.layouts.base')
 
-@section('title', 'Kategori')
+@section('title', 'Manajemen Kategori')
 
 @section('content')
 
 @push('style')
 <style>
     .btn-custom {
-        background-color: #007bff;
+        background-color: #007bff; 
         color: white;
-        border-radius: 5px;
-        padding: 8px 12px;
-        font-size: 14px;
         border: none;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        float: right;
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        white-space: nowrap; 
     }
-    .btn-custom:hover {
-        background-color: #0056b3;
+
+    .btn-custom:hover,
+    .btn-custom:focus,
+    .btn-custom:active {
+        background-color: #007bff !important; 
+        color: white !important; 
+        box-shadow: none !important; 
+        outline: none !important; 
     }
     .table-container {
         padding: 20px;
@@ -43,10 +47,6 @@
                 <i class="fas fa-plus"></i> Tambah Kategori
             </button> 
         </div>
-
-        {{-- <div class="search-container">
-            <input type="text" id="searchInput" class="form-control" placeholder="Cari kategori...">
-        </div> --}}
         <div class="card-body">
             <div class="table-responsive">
                 <table id="kategoriTable" class="table table-bordered">
@@ -64,7 +64,7 @@
                             <td>{{ $kat->nama_kategori }}</td>
                             <td class="text-center">
                                 <button class="btn btn-sm btn-danger hapusKategori" data-id="{{ $kat->id }}">
-                                    <i class="fas fa-trash"></i> Delete
+                                    <i class="fas fa-trash"></i> 
                                 </button>
                             </td>
                         </tr>
@@ -106,12 +106,22 @@
 @endsection
 
 @push('script')
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 
+<script>
+     @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Sukses!',
+            text: "{{ session('success') }}",
+            showConfirmButton: false,
+            timer: 3000
+        });
+    @endif
+</script>
 <script>
 $(document).ready(function() {
     let table = $('#kategoriTable').DataTable({
@@ -123,8 +133,11 @@ $(document).ready(function() {
         "autoWidth": false
     });
 
-    $('#searchInput').on('keyup', function() {
-        table.search(this.value).draw();
+    $(document).ready(function() {
+    var table = $('#yourTableID').DataTable();
+
+    // Menambahkan placeholder ke input pencarian bawaan DataTables
+    $('.dataTables_filter input').attr('placeholder', 'Cari data kategori...');
     });
 
     $(document).on('click', '.hapusKategori', function(event) {
@@ -162,5 +175,4 @@ $(document).ready(function() {
     });
 });
 </script>
-
 @endpush

@@ -1,260 +1,29 @@
-{{-- @extends('admin.layouts.base')
-
-@section('title', 'Barang')
-
-@section('content')
-@include('style')
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-<style>
-.btn-custom {
-    background-color: #007bff; 
-    color: white;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 14px;
-    border: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    width: 18%;
-    margin-top: 20px;
-    margin-left: 20px;
-}
-.btn-custom:hover,
-.btn-custom:focus,
-.btn-custom:active {
-    background-color: #007bff !important;
-    color: white !important;
-    box-shadow: none !important;
-    outline: none !important;
-    border: none !important;
-    opacity: 1 !important;
-}
-</style>
-
-<div class="container">
-    <div class="card table-container">
-        @if(session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Sukses!',
-                text: "{{ session('success') }}",
-                showConfirmButton: false,
-                timer: 2000
-            });
-        </script>
-        @endif
-
-        @if(session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: "{{ session('error') }}",
-                showConfirmButton: false,
-                timer: 2000
-            });
-        </script>
-        @endif
-
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-box"></i> Daftar Barang
-            </h3>
-        </div>
-
-        <button class="btn btn-custom mb-3" data-toggle="modal" data-target="#tambahBarangModal">
-            <i class="fas fa-plus"></i> Tambah Barang
-        </button> 
-
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover" id="barangTable">
-                    <thead>
-                        <tr class="text-center">
-                            <th>Kode Barang</th>
-                            <th>Nama Barang</th>
-                            <th>Produk</th>
-                            <th>Satuan</th>
-                            <th>Harga Jual</th>
-                            <th>Stok</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($barang as $brg)
-                        <tr class="text-center" id="row-{{ $brg->id }}">
-                            <td>{{ $brg->kode_barang }}</td>
-                            <td>{{ $brg->nama_barang }}</td>
-                            <td>{{ $brg->produk->nama_produk ?? 'Tidak Ada' }}</td>
-                            <td>{{ $brg->satuan }}</td>
-                            <td>Rp {{ number_format($brg->harga_jual, 0, ',', '.') }}</td>
-                            <td>{{ $brg->stok }}</td>
-                            <td class="text-center">
-                                <button class="btn btn-danger btn-sm hapusBarang" data-id="{{ $brg->id }}">
-                                    <i class="fas fa-trash"></i> Hapus
-                                </button>                            
-                            </td>
-                        </tr>
-                        @endforeach                                       
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>    
-</div> 
-
-<!-- Modal Tambah Barang -->
-<div class="modal fade" id="tambahBarangModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Barang</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{{ route('barang.store') }}" method="POST">
-                @csrf
-                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;"> 
-                    <div class="row">
-                        <div class="form-group">
-                            <label>Kode Barang</label>
-                            <input type="text" name="kode_barang" class="form-control" value="{{ $kodeBarang ?? '' }}" readonly>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Pilih Produk</label>
-                            <select name="produk_id" class="form-control" required>
-                                <option value="">Pilih Produk</option>
-                                @foreach ($produk as $prd)
-                                    <option value="{{ $prd->id }}">{{ $prd->nama_produk }}</option>
-                                @endforeach
-                            </select>                            
-                        </div>                        
-
-                        <div class="form-group">
-                            <label>Nama Barang</label>
-                            <input type="text" name="nama_barang" placeholder="Masukkan Nama Barang" class="form-control" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Satuan</label>
-                            <select name="satuan" class="form-control">
-                                <option value="Liter">Liter</option>
-                                <option value="Gram">Gram</option>
-                                <option value="Kilogram">Kilogram</option>
-                                <option value="Pcs">Pcs</option>
-                                <option value="Botol">Botol</option>
-                                <option value="Dus">Dus</option>
-                                <option value="Lusin">Lusin</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Harga Jual</label>
-                            <input type="number" name="harga_jual" placeholder="Masukkan Harga Jual" class="form-control" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Stok</label>
-                            <input type="number" name="stok" placeholder="Masukkan Stok" class="form-control" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>            
-        </div>
-    </div>
-</div>
-@endsection
-
-@push('script')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-$(document).ready(function() {
-    console.log("✅ JavaScript Loaded!");
-
-    $(document).on('click', '.hapusBarang', function(event) {
-        event.preventDefault();
-
-        let barangId = $(this).data('id');
-        let token = $('meta[name="csrf-token"]').attr('content');
-
-        console.log("🟡 Klik tombol hapus! ID:", barangId);
-
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Barang akan dihapus secara permanen!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                console.log("🔵 Mengirim AJAX DELETE ke server...");
-
-                $.ajax({
-                    url: '/admin/barang/' + barangId,
-                    type: 'POST',
-                    data: {
-                        _method: 'DELETE',
-                        _token: token
-                    },
-                    success: function(response) {
-                        console.log("✅ Response dari server:", response);
-
-                        if (response.status === 'success') {
-                            Swal.fire('Sukses!', response.message, 'success');
-
-                            $("#row-" + barangId).fadeOut(500, function() {
-                                $(this).remove();
-                            });
-                        } else {
-                            Swal.fire('Gagal!', response.message, 'error');
-                        }
-                    },
-                    error: function(xhr) {
-                        console.log("❌ Error Response:", xhr);
-                        Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus barang.', 'error');
-                    }
-                });
-            }
-        });
-    });
-});
-</script>
-@endpush --}}
 @extends('admin.layouts.base')
 
-@section('title', 'Barang')
+@section('title', 'Manajemen Barang')
 
 @section('content')
 
 @push('style')
 <style>
     .btn-custom {
-        background-color: #007bff;
+        background-color: #007bff; 
         color: white;
-        border-radius: 5px;
-        padding: 8px 12px;
-        font-size: 14px;
         border: none;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        float: right;
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        white-space: nowrap; 
     }
-    .btn-custom:hover {
-        background-color: #0056b3;
+
+    .btn-custom:hover,
+    .btn-custom:focus,
+    .btn-custom:active {
+        background-color: #007bff !important; 
+        color: white !important; 
+        box-shadow: none !important; 
+        outline: none !important; 
     }
     .table-container {
         padding: 20px;
@@ -264,6 +33,38 @@ $(document).ready(function() {
     }
     .search-container {
         margin-bottom: 15px;
+    }
+    .filter-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; 
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .filter-container input {
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        width: 310px; 
+    }
+    .filter-container .separator {
+        font-weight: bold;
+        color: #555;
+        font-size: 14px;
+    }
+    .btn-filter {
+        background-color: #ff8c00;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        white-space: nowrap; 
+    }
+    .btn-filter:hover {
+        background-color: #e67e00;
     }
 </style>
 @endpush
@@ -289,12 +90,22 @@ $(document).ready(function() {
             });
         </script>
     @endif
+    <form method="GET" action="{{ route('barang.index') }}" class="filter-container">
+        <label for="filter_tanggal">Filter Tanggal Pembelian:</label>
+        
+        <input type="date" name="tanggal_awal" class="form-control" 
+               value="{{ request('tanggal_awal') }}" required>
     
-        <div class="card-body">
-            <div class="search-container">
-                <input type="text" id="searchInput" class="form-control" placeholder="Cari barang...">
-            </div>
-
+        <span class="separator">Sampai :</span>
+    
+        <input type="date" name="tanggal_akhir" class="form-control" 
+               value="{{ request('tanggal_akhir') }}" required>
+    
+        <button type="submit" class="btn-filter">
+            <i class="fas fa-filter"></i> Filter
+        </button>
+    </form>
+    
             <div class="table-responsive">
                 <table id="barangTable" class="table table-bordered">
                     <thead class="thead-light">
@@ -303,9 +114,9 @@ $(document).ready(function() {
                             <th>Nama Barang</th>
                             <th>Produk</th>
                             <th>Satuan</th>
-                            <th>Harga Jual</th>
+                            <th>Harga Beli</th>
                             <th>Stok</th>
-                            <th>Aksi</th>
+                            <th>Tanggal Pembelian</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -317,11 +128,7 @@ $(document).ready(function() {
                             <td>{{ $brg->satuan }}</td>
                             <td>Rp {{ number_format($brg->harga_jual, 0, ',', '.') }}</td>
                             <td>{{ $brg->stok }}</td>
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-danger hapusBarang" data-id="{{ $brg->id }}">
-                                    <i class="fas fa-trash"></i> 
-                                </button>
-                            </td>
+                            <td>{{ $brg->tanggal_pembelian ? \Carbon\Carbon::parse($brg->tanggal_pembelian)->format('d-m-Y') : '-' }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -346,12 +153,12 @@ $(document).ready(function() {
                 <div class="modal-body" style="max-height: 70vh; overflow-y: auto;"> 
                     <div class="row">
                         <div class="form-group">
-                            <label>Kode Barang</label>
+                            <label>Kode Barang :</label>
                             <input type="text" name="kode_barang" class="form-control" value="{{ $kodeBarang ?? '' }}" readonly>
                         </div>
                         
                         <div class="form-group">
-                            <label>Pilih Produk</label>
+                            <label>Pilih Produk :</label>
                             <select name="produk_id" class="form-control" required>
                                 <option value="">Pilih Produk</option>
                                 @foreach ($produk as $prd)
@@ -361,12 +168,12 @@ $(document).ready(function() {
                         </div>                        
 
                         <div class="form-group">
-                            <label>Nama Barang</label>
+                            <label>Nama Barang :</label>
                             <input type="text" name="nama_barang" placeholder="Masukkan Nama Barang" class="form-control" required>
                         </div>
                         
                         <div class="form-group">
-                            <label>Satuan</label>
+                            <label>Satuan :</label>
                             <select name="satuan" class="form-control">
                                 <option value="Liter">Liter</option>
                                 <option value="Gram">Gram</option>
@@ -379,14 +186,19 @@ $(document).ready(function() {
                         </div>
                         
                         <div class="form-group">
-                            <label>Harga Jual</label>
+                            <label>Harga Jual :</label>
                             <input type="number" name="harga_jual" placeholder="Masukkan Harga Jual" class="form-control" required>
                         </div>
                         
                         <div class="form-group">
-                            <label>Stok</label>
+                            <label>Stok :</label>
                             <input type="number" name="stok" placeholder="Masukkan Stok" class="form-control" required>
                         </div>
+
+                        <div class="form-group">
+                            <label for="tanggal_pembelian">Tanggal Pembelian :</label>
+                            <input type="date" name="tanggal_pembelian" class="form-control" required>
+                        </div>                       
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -397,7 +209,6 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
-
 @endsection
 
 @push('script')
@@ -418,45 +229,34 @@ $(document).ready(function() {
         "autoWidth": false
     });
 
-    $('#searchInput').on('keyup', function() {
-        table.search(this.value).draw();
-    });
+    $(document).ready(function() {
+    var table = $('#yourTableID').DataTable();
 
-    $(document).on('click', '.hapusBarang', function(event) {
-        event.preventDefault();
-        let barangId = $(this).data('id');
-        let token = $('meta[name="csrf-token"]').attr('content');
+    // Menambahkan placeholder ke input pencarian bawaan DataTables
+    $('.dataTables_filter input').attr('placeholder', 'Cari data barang...');
+    });
+     // SweetAlert untuk notifikasi proses filtering
+     $('.filter-container').on('submit', function(event) {
+        event.preventDefault(); // Mencegah form langsung dikirim
 
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data akan dihapus secara permanen!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '/admin/barang/' + barangId,
-                    type: 'DELETE',
-                    data: { _token: token },
-                    success: function(response) {
-                        Swal.fire('Dihapus!', 'Barang berhasil dihapus.', 'success');
-                        $("#row-" + barangId).fadeOut(500, function() {
-                            $(this).remove();
-                        });
-                    },
-                    error: function() {
-                        Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
-                    }
-                });
+            title: 'Memproses Filter...',
+            text: 'Mohon tunggu sebentar.',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+                
+                // Submit form setelah delay agar user melihat animasi
+                setTimeout(() => {
+                    event.target.submit(); // Kirim form setelah delay
+                }, 1000);
             }
         });
     });
+
 });
 </script>
-
 @endpush
 

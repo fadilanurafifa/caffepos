@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pelanggan', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('kode_pelanggan');
+            $table->string('kode_pelanggan');
             $table->string('nama');
             $table->string('alamat');
             $table->string('no_telp');

@@ -12,39 +12,44 @@ class PemasokController extends Controller
         $pemasok = Pemasok::latest()->paginate(5);
         return view('admin.pemasok.index', compact('pemasok'));
     }
-
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $request->validate([
-            'nama_pemasok' => 'required|string|max:255'
+            'nama_pemasok' => 'required|string|max:255',
         ]);
-
-        Pemasok::create([
+    
+        $pemasok = Pemasok::create([
             'nama_pemasok' => $request->nama_pemasok
         ]);
-
-        return redirect()->back()->with('success', 'Pemasok berhasil ditambahkan!');
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama_pemasok' => 'required|string|max:255'
+    
+        return response()->json([
+            'success' => true,
+            'data' => $pemasok
         ]);
-
+    }
+    
+    public function update(Request $request, $id) {
+        $request->validate([
+            'nama_pemasok' => 'required|string|max:255',
+        ]);
+    
         $pemasok = Pemasok::findOrFail($id);
         $pemasok->update([
             'nama_pemasok' => $request->nama_pemasok
         ]);
-
-        return response()->json(['status' => 'success', 'message' => 'Pemasok berhasil diperbarui!']);
+    
+        return response()->json([
+            'success' => true,
+            'data' => $pemasok
+        ]);
     }
-
-    public function destroy($id)
-    {
+    
+    public function destroy($id) {
         $pemasok = Pemasok::findOrFail($id);
         $pemasok->delete();
-
-        return response()->json(['status' => 'success', 'message' => 'Pemasok berhasil dihapus!']);
-    }
+    
+        return response()->json([
+            'success' => true
+        ]);
+    }    
+    
 }
