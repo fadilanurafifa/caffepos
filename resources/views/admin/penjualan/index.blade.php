@@ -20,18 +20,19 @@
             <label>Produk</label>
             <select id="produk" class="form-control" onchange="updateFotoProduk()">
                 @foreach ($produk as $p)
-                    <option value="{{ $p->id }}" 
-                        data-harga="{{ $p->harga }}" 
+                    <option value="{{ $p->id }}" data-harga="{{ $p->harga }}"
                         data-foto="{{ asset('storage/produk_fotos/' . $p->foto) }}">
                         {{ $p->nama_produk }} - Rp{{ number_format($p->harga, 0, ',', '.') }}
                     </option>
                 @endforeach
             </select>
-            
+
             <!-- Foto Produk -->
-            <img id="fotoProduk" src="" alt="Foto Produk" class="img-thumbnail mt-2" style="max-width: 150px; display: none;">
-            
-            <input type="number" id="jumlah" class="form-control mt-2" placeholder="Jumlah" min="1" value="1">
+            <img id="fotoProduk" src="" alt="Foto Produk" class="img-thumbnail mt-2"
+                style="max-width: 150px; display: none;">
+
+            <input type="number" id="jumlah" class="form-control mt-2" placeholder="Jumlah" min="1"
+                value="1">
             <button onclick="tambahProduk()" class="btn btn-primary mt-2">Tambah Produk</button>
         </div>
         <!-- Keranjang -->
@@ -250,7 +251,7 @@
                 .then(data => {
                     if (data.success) {
                         alert(`Transaksi berhasil!\nNo Faktur: ${data.no_faktur}\nTotal Bayar: Rp ${data.total_bayar}`);
-                        location.reload();
+                        window.location.href = "{{ route('admin.transaksi') }}";
                     } else {
                         alert("Gagal: " + data.error);
                     }
@@ -283,18 +284,18 @@
             document.getElementById("totalBayar").innerText = totalBayar.toLocaleString();
         });
     </script>
-   <script>
-    function updateFotoProduk() {
-        let produk = document.getElementById("produk");
-        let foto = produk.options[produk.selectedIndex].getAttribute("data-foto");
-        let imgElement = document.getElementById("fotoProduk");
+    <script>
+        function updateFotoProduk() {
+            let produk = document.getElementById("produk");
+            let foto = produk.options[produk.selectedIndex].getAttribute("data-foto");
+            let imgElement = document.getElementById("fotoProduk");
 
-        if (foto && foto !== "null" && foto !== "") {
-            imgElement.src = foto;
-            imgElement.style.display = "block";
-        } else {
-            imgElement.style.display = "none";
+            if (foto && foto !== "null" && foto !== "") {
+                imgElement.src = foto;
+                imgElement.style.display = "block";
+            } else {
+                imgElement.style.display = "none";
+            }
         }
-    }
-</script>
+    </script>
 @endpush

@@ -91,6 +91,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pembayaran/{id}/confirm', [KeranjangController::class, 'confirmPayment'])->name('pembayaran.confirm');
 });
 
+
 // transaksi
 Route::get('/admin/transaksi', [TransaksiController::class, 'index'])->name('admin.transaksi');
 Route::get('/admin/transaksi/bayar/{id}', [TransaksiController::class, 'bayar'])->name('admin.transaksi.bayar');
