@@ -13,12 +13,6 @@ class Penjualan extends Model
 
     protected $guarded = []; // Memungkinkan mass assignment tanpa batasan
 
-    // Relasi ke DetailPenjualan
-    public function detailPenjualan()
-    {
-        return $this->hasMany(DetailPenjualan::class, 'penjualan_id');
-    }
-
     // Relasi ke Pelanggan
     public function pelanggan()
     {
@@ -30,6 +24,12 @@ class Penjualan extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function detailPenjualan()
+    {
+        return $this->hasMany(DetailPenjualan::class, 'penjualan_id');
+    }
+
 }
 
 

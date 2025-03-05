@@ -41,11 +41,11 @@
                             </td>
                             <td>
                                 @if($p->status_pembayaran == 'pending')
-                                    <button class="btn btn-success btn-sm" onclick="prosesPembayaran('{{ $p->id }}', '{{ $p->total_bayar }}')">Bayar</button>
+                                    <a href="{{ route('admin.pembayaran.show', $p->no_faktur) }}" class="btn btn-success btn-sm">Bayar</a>
                                 @else
                                     <button class="btn btn-secondary btn-sm" disabled>Lunas</button>
                                 @endif
-                            </td>
+                            </td>                                                 
                         </tr>
                         @endforeach
                     </tbody>

@@ -13,17 +13,18 @@ class DetailPenjualan extends Model
     // protected $fillable = ['penjualan_id', 'barang_id', 'harga_jual', 'jumlah', 'sub_total'];
     protected $guarded = [];
 
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class, 'barang_id');
+    }
+        
     public function penjualan()
     {
         return $this->belongsTo(Penjualan::class, 'penjualan_id');
     }
 
-    public function barang()
-    {
-        return $this->belongsTo(Barang::class, 'barang_id');
-    }
     public function produk()
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
 }

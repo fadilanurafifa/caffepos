@@ -5,19 +5,30 @@
     <div class="container">
         <h2 class="title">Transaksi Penjualan</h2>
 
-        <!-- Pilih Pelanggan -->
-        <div class="form-group">
-            <label>Pelanggan</label>
-            <select id="pelanggan" class="form-control">
-                @foreach ($pelanggan as $p)
-                    <option value="{{ $p->id }}">{{ $p->nama }}</option>
-                @endforeach
-            </select>
-        </div>
+        <!-- Pilih Tipe Pelanggan -->
+        <div class="d-flex gap-4 w-100">
+            <div class="flex-grow-1">
+                <label for="tipe_pelanggan">Pilih Tipe Pelanggan :</label>
+                <select id="tipe_pelanggan" class="form-control" onchange="togglePelangganForm()">
+                    <option value="member">Pelanggan Member</option>
+                    <option value="lain">Pelanggan Lain</option>
+                </select>
+            </div>
+        
+            <div class="flex-grow-1" id="form_member">
+                <label for="pelanggan">Pelanggan Member</label>
+                <select id="pelanggan" class="form-control">
+                    <option value="">-- Pilih Pelanggan --</option>
+                    @foreach ($pelanggan as $p)
+                        <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>        
 
         <!-- Tambah Produk -->
         <div class="form-group">
-            <label>Produk</label>
+            <label>Produk :</label>
             <select id="produk" class="form-control" onchange="updateFotoProduk()">
                 @foreach ($produk as $p)
                     <option value="{{ $p->id }}" data-harga="{{ $p->harga }}"
@@ -27,9 +38,9 @@
                 @endforeach
             </select>
 
-            <!-- Foto Produk -->
+            {{-- <!-- Foto Produk -->
             <img id="fotoProduk" src="" alt="Foto Produk" class="img-thumbnail mt-2"
-                style="max-width: 150px; display: none;">
+                style="max-width: 150px; display: none;"> --}}
 
             <input type="number" id="jumlah" class="form-control mt-2" placeholder="Jumlah" min="1"
                 value="1">
@@ -56,7 +67,7 @@
         </div>
 
         <!-- Tombol Simpan -->
-        <button onclick="simpanTransaksi()" class="btn btn-success">Simpan Transaksi</button>
+        <button onclick="simpanTransaksi()" class="btn btn-success">Simpan Keranjang</button>
     </div>
 @endsection
 
@@ -216,48 +227,64 @@
             keranjang.splice(index, 1);
             renderKeranjang();
         }
-
         function simpanTransaksi() {
-            let pelangganId = document.getElementById('pelanggan').value;
-            // let metodePembayaran = document.getElementById('metode_pembayaran').value;
+        let tipePelanggan = document.getElementById("tipe_pelanggan").value;
+        let pelangganId = tipePelanggan === "member" ? document.getElementById("pelanggan").value : 0;
 
-            if (keranjang.length === 0) {
-                alert("Keranjang masih kosong!");
-                return;
-            }
-
-            let produkData = keranjang.map(item => ({
-                produk_id: item.id,
-                jumlah: item.jumlah
-            }));
-
-            let requestData = {
-                pelanggan_id: pelangganId,
-                produk: produkData,
-                // metode_pembayaran: metodePembayaran
-            };
-
-            console.log("Data yang dikirim:", requestData); // Debugging sebelum dikirim
-
-            fetch("{{ route('penjualan.store') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    },
-                    body: JSON.stringify(requestData)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(`Transaksi berhasil!\nNo Faktur: ${data.no_faktur}\nTotal Bayar: Rp ${data.total_bayar}`);
-                        window.location.href = "{{ route('admin.transaksi') }}";
-                    } else {
-                        alert("Gagal: " + data.error);
-                    }
-                })
-                .catch(err => console.error("Error:", err));
+        if (keranjang.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Keranjang kosong!',
+            text: 'Silakan tambahkan produk terlebih dahulu.',
+        });
+        return;
         }
+
+        let produkData = keranjang.map(item => ({
+        produk_id: item.id,
+        jumlah: item.jumlah
+        }));
+
+        let requestData = {
+        pelanggan_id: parseInt(pelangganId), // Jika pelanggan lain, otomatis = 0
+        produk: produkData,
+        };
+
+        fetch("{{ route('penjualan.store') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify(requestData)
+        })
+        .then(res => res.json())
+        .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Transaksi Berhasil!',
+                html: `No Faktur: <b>${data.no_faktur}</b><br>Total Bayar: <b>Rp ${data.total_bayar.toLocaleString()}</b>`
+            }).then(() => {
+                window.location.href = `{{ route('admin.pembayaran.show', ['no_faktur' => '__NO_FAKTUR__']) }}`.replace('__NO_FAKTUR__', data.no_faktur);
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: data.error,
+            });
+        }
+        })
+    .catch(err => {
+        console.error("Error:", err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Terjadi Kesalahan',
+            text: 'Silakan coba lagi.',
+        });
+    });
+}
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -297,5 +324,18 @@
                 imgElement.style.display = "none";
             }
         }
+    </script>
+    <script>
+        function togglePelangganForm() {
+    let tipePelanggan = document.getElementById("tipe_pelanggan").value;
+    let formMember = document.getElementById("form_member");
+
+    if (tipePelanggan === "member") {
+        formMember.style.display = "block";
+    } else {
+        formMember.style.display = "none";
+    }
+}
+
     </script>
 @endpush

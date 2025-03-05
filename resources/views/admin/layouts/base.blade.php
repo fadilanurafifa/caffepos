@@ -151,13 +151,27 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePenjualan"
                 aria-expanded="true" aria-controls="collapsePenjualan">
                  <i class="fas fa-fw fa-shopping-cart"></i>
-                 <span>Keranjang Produk</span>
+                 <span>Manajemen Transaksi</span>
              </a>             
                 <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manajemen Penjualan</h6>
+                        <h6 class="collapse-header">Sistem Transaksi</h6>
                         <a class="collapse-item" href="{{ route('penjualan.index') }}">Transaksi Penjualan</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHistory"
+                aria-expanded="true" aria-controls="collapsePenjualan">
+                 <i class="fas fa-fw fa-shopping-cart"></i>
+                 <span>History Transaksi</span>
+             </a>             
+                <div id="collapseHistory" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manajemen History</h6>
+                        <a class="collapse-item" href="{{ route('history.penjualan') }}">History Transaksi </a>
                     </div>
                 </div>
             </li>
@@ -174,7 +188,7 @@
                     <a class="collapse-item" href="login.html">Login</a>
                     <a class="collapse-item cursor-pointer" href="#" 
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                     Logout
                     </a>
                     <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                      @csrf

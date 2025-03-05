@@ -24,51 +24,70 @@ class PenjualanController extends Controller
 
         return view('admin.penjualan.index', compact('pelanggan', 'penjualan', 'produk',));
     }
-
+    
     public function store(Request $request)
     {
-        // dd($request->all());
 
+        // Validasi input
         $validated = $request->validate([
             'pelanggan_id' => 'required',
             'produk' => 'required|array|min:1',
             'produk.*.produk_id' => 'required',
             'produk.*.jumlah' => 'required|integer|min:1',
         ]);
-
+    
         Log::info('Request Penjualan:', $request->all());
+    
         DB::beginTransaction();
         try {
             $totalBayar = 0;
-            $no_faktur = Penjualan::latest()->first()->no_faktur ?? 0;
-
+    
+            // Cek apakah ada transaksi sebelumnya untuk menentukan no_faktur
+            $lastPenjualan = Penjualan::latest()->first();
+            $no_faktur = $lastPenjualan ? $lastPenjualan->no_faktur + 1 : 1;
+    
+            // Validasi apakah produk ada di database
+            $produkIds = array_column($validated['produk'], 'produk_id');
+            $produkTersedia = Produk::whereIn('id', $produkIds)->pluck('id')->toArray();
+            foreach ($produkIds as $id) {
+                if (!in_array($id, $produkTersedia)) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Produk dengan ID ' . $id . ' tidak ditemukan.',
+                    ], 400);
+                }
+            }
+    
+            // Simpan transaksi penjualan
             $penjualan = Penjualan::create([
-                'no_faktur' => $no_faktur + 1,
+                'no_faktur' => $no_faktur,
                 'tgl_faktur' => now(),
                 'total_bayar' => 0,
                 'pelanggan_id' => $validated['pelanggan_id'],
                 'user_id' => 1,
                 'metode_pembayar' => $request->metode_pembayaran ?? 'cash',
             ]);
-
+    
+            // Simpan detail penjualan
             foreach ($validated['produk'] as $item) {
-                $produk = Produk::findOrFail($item['produk_id']);
+                $produk = Produk::find($item['produk_id']);
                 $hargaJual = $produk->harga;
                 $subTotal = $hargaJual * $item['jumlah'];
                 $totalBayar += $subTotal;
-
+    
                 DetailPenjualan::create([
-                    'penjualan_id' => $penjualan->id ?? null,
+                    'penjualan_id' => $penjualan->id,
                     'produk_id' => $item['produk_id'],
                     'jumlah' => $item['jumlah'],
                     'sub_total' => $subTotal,
                 ]);
             }
-
+    
+            // Update total bayar setelah semua item dihitung
             $penjualan->update(['total_bayar' => $totalBayar]);
-
+    
             DB::commit();
-
+    
             return response()->json([
                 'success' => true,
                 'no_faktur' => $penjualan->no_faktur,
@@ -76,12 +95,12 @@ class PenjualanController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error Transaksi Penjualan: ' . $e->getMessage());
-
+            Log::error('Error Transaksi Penjualan:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+    
             return response()->json([
                 'success' => false,
-                'error' => 'Gagal menyimpan transaksi.',
+                'error' => 'Gagal menyimpan transaksi. ' . $e->getMessage(),
             ], 400);
         }
-    }
+    }    
 }

@@ -1,14 +1,14 @@
 <?php
 
-use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\BarangController;
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\HistoryPenjualanController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PemasokController;
+use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\TransaksiController;
@@ -95,3 +95,14 @@ Route::middleware(['auth'])->group(function () {
 // transaksi
 Route::get('/admin/transaksi', [TransaksiController::class, 'index'])->name('admin.transaksi');
 Route::get('/admin/transaksi/bayar/{id}', [TransaksiController::class, 'bayar'])->name('admin.transaksi.bayar');
+
+// pembayaran 
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('pembayaran')->name('pembayaran.')->group(function () {
+        Route::get('/{no_faktur}', [PembayaranController::class, 'show'])->name('show');
+        Route::post('/bayar/{no_faktur}', [PembayaranController::class, 'bayar'])->name('bayar');
+    });
+});
+
+// history Transaksi
+Route::get('/admin/history-penjualan', [HistoryPenjualanController::class, 'index'])->name('history.penjualan');
