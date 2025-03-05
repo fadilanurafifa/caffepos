@@ -145,7 +145,9 @@
                         @endforeach
                     </tbody>
                 </table>
-                <p><strong>Status:</strong> {{ $penjualan->status }}</p>
+
+                {{-- {{$penjualan}} --}}
+                <p><strong>Status:</strong> {{ $penjualan->status_pembayaran }}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
