@@ -4,7 +4,6 @@
 
 @section('content')
 @include('style')
-
     <style>
         .produk-container {
             display: flex;
@@ -123,14 +122,36 @@
         .input-group {
             max-width: 250px;
         }
+        .btn-customs {
+        background-color: #007bff; 
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        white-space: nowrap; 
+    }
+
+    .btn-customs:hover,
+    .btn-customs:focus,
+    .btn-customs:active {
+        background-color: #007bff !important; 
+        color: white !important; 
+        box-shadow: none !important; 
+        outline: none !important; 
+    }
     </style>
 
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3><i class="fas fa-box"></i> Daftar Produk</h3>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#tambahProdukModal">
-                <i class="fas fa-plus"></i> Tambah Produk
-            </button>
+        <h1 class="h3 mb-4 text-gray-800">
+            <i class="fas fa-box"></i> Manajemen Produk
+        </h1>
+        <div class="d-flex justify-content-end">
+        <button class="btn btn-customs" data-toggle="modal" data-target="#tambahProdukModal" style="width: 150px; margin-bottom: 15px; border-radius: 5px; margin-top: -55px;">
+            <i class="fas fa-plus"></i> Tambah Produk
+        </button>
+
         </div>
         @if(session('success'))
         <script>
@@ -194,7 +215,12 @@
             
                                     <!-- Tombol Hapus -->
                                     <button class="btn btn-danger btn-sm btn-hapus" data-id="{{ $prd->id }}" style="font-size: 10px; padding: 2px 5px;">
-                                        <i class="fas fa-trash-alt"></i> Hapus
+                                        <i class="fas fa-trash-alt"></i> 
+                                    </button>
+                                                <!-- Tombol Edit Stok -->
+                                    <button class="btn btn-warning btn-sm btn-edit-stok" data-id="{{ $prd->id }}" data-stok="{{ $prd->stok }}"
+                                            style="font-size: 10px; padding: 2px 5px;">
+                                            <i class="fas fa-edit"></i> 
                                     </button>
                                 </div>
                             </div>
@@ -204,6 +230,35 @@
             </div>
         </div>              
     </div>
+
+    <div class="modal fade" id="editStokModal" tabindex="-1" aria-labelledby="editStokLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editStokLabel">Edit Stok Produk</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="editStokForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <input type="hidden" id="produkId" name="produk_id">
+                        <div class="form-group">
+                            <label for="stokBaru">Stok Baru</label>
+                            <input type="number" id="stokBaru" name="stok" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
     <div class="modal fade" id="tambahProdukModal" tabindex="-1" aria-labelledby="tambahProdukLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -355,5 +410,46 @@
             });
         });
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".btn-edit-stok").forEach(button => {
+                button.addEventListener("click", function () {
+                    let produkId = this.getAttribute("data-id");
+                    let stokSaatIni = this.getAttribute("data-stok");
+    
+                    document.getElementById("produkId").value = produkId;
+                    document.getElementById("stokBaru").value = stokSaatIni;
+    
+                    $('#editStokModal').modal('show');
+                });
+            });
+    
+            document.getElementById("editStokForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+    
+                let produkId = document.getElementById("produkId").value;
+                let stokBaru = document.getElementById("stokBaru").value;
+    
+                fetch(`/admin/produk/${produkId}/update-stok`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                    },
+                    body: JSON.stringify({ stok: stokBaru })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire("Sukses!", data.message, "success").then(() => {
+                        location.reload();
+                    });
+                })
+                .catch(error => {
+                    Swal.fire("Error!", "Terjadi kesalahan, coba lagi.", "error");
+                });
+            });
+        });
+    </script>
+    
     
 @endpush

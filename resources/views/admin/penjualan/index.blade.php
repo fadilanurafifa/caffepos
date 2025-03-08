@@ -2,76 +2,7 @@
 @section('title', 'Transaksi Penjualan')
 
 @section('content')
-    <div class="container">
-        <h2 class="title">Transaksi Penjualan</h2>
-
-        <!-- Pilih Tipe Pelanggan -->
-        <div class="d-flex gap-4 w-100">
-            <div class="flex-grow-1">
-                <label for="tipe_pelanggan">Pilih Tipe Pelanggan :</label>
-                <select id="tipe_pelanggan" class="form-control" onchange="togglePelangganForm()">
-                    <option value="member">Pelanggan Member</option>
-                    <option value="lain">Pelanggan Lain</option>
-                </select>
-            </div>
-        
-            <div class="flex-grow-1" id="form_member">
-                <label for="pelanggan">Pelanggan Member</label>
-                <select id="pelanggan" class="form-control">
-                    <option value="">-- Pilih Pelanggan --</option>
-                    @foreach ($pelanggan as $p)
-                        <option value="{{ $p->id }}">{{ $p->nama }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>        
-
-        <!-- Tambah Produk -->
-        <div class="form-group">
-            <label>Produk :</label>
-            <select id="produk" class="form-control" onchange="updateFotoProduk()">
-                @foreach ($produk as $p)
-                    <option value="{{ $p->id }}" data-harga="{{ $p->harga }}"
-                        data-foto="{{ asset('storage/produk_fotos/' . $p->foto) }}">
-                        {{ $p->nama_produk }} - Rp{{ number_format($p->harga, 0, ',', '.') }}
-                    </option>
-                @endforeach
-            </select>
-
-            {{-- <!-- Foto Produk -->
-            <img id="fotoProduk" src="" alt="Foto Produk" class="img-thumbnail mt-2"
-                style="max-width: 150px; display: none;"> --}}
-
-            <input type="number" id="jumlah" class="form-control mt-2" placeholder="Jumlah" min="1"
-                value="1">
-            <button onclick="tambahProduk()" class="btn btn-primary mt-2">Tambah Produk</button>
-        </div>
-        <!-- Keranjang -->
-        <h3 class="sub-title">Keranjang</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Produk</th>
-                    <th>Harga</th>
-                    <th>Jumlah</th>
-                    <th>Subtotal</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="keranjang"></tbody>
-        </table>
-
-        <!-- Total dengan Box -->
-        <div class="total-box">
-            <strong>Total: Rp <span id="totalBayar">0</span></strong>
-        </div>
-
-        <!-- Tombol Simpan -->
-        <button onclick="simpanTransaksi()" class="btn btn-success">Simpan Keranjang</button>
-    </div>
-@endsection
-
-@push('styles')
+{{-- @push('styles')
     <style>
         .container {
             max-width: 800px;
@@ -169,64 +100,195 @@
         .btn-danger:hover {
             background: #bd2130;
         }
+        .customer-selection {
+            background: #f8f9fa; /* Warna latar belakang */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .custom-select {
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .custom-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .custom-select:hover {
+            border-color: #0056b3;
+        }
     </style>
-@endpush
+@endpush --}}
+<div class="container">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-bottom">
+            <h5 class="mb-0 text-dark fw-bold"><i class="fas fa-user"></i> Pilih Tipe Pelanggan</h5>
+        </div>
+        <div class="card-body">
+            <div class="customer-selection">
+                <div class="d-flex flex-column flex-md-row gap-3 w-100">
+                    <div class="flex-grow-1">
+                        <label for="tipe_pelanggan" class="form-label fw-bold">Tipe Pelanggan :</label>
+                        <select id="tipe_pelanggan" class="form-control custom-select" onchange="togglePelangganForm()">
+                            <option value="member">Pelanggan Member</option>
+                            <option value="Biasa">Pelanggan Biasa</option>
+                        </select>
+                    </div>
+            
+                    <div class="flex-grow-1" id="form_member">
+                        <label for="pelanggan" class="form-label fw-bold">Pelanggan Member :</label>
+                        <select id="pelanggan" class="form-control custom-select">
+                            <option value="">-- Pilih Pelanggan --</option>
+                            @foreach ($pelanggan as $p)
+                                <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Bagian Produk -->
+        <div class="col-md-8" style="margin-top: 20px; margin-bottom: 30px;">
+            <h1 class="h5 mb-3 text-gray-800">
+                <i class="fas fa-shopping-basket"></i> Pilih Produk
+            </h1>
+            <div class="d-flex flex-wrap" id="produk-container" style="gap: 6px;"> 
+                @foreach ($produk as $p)
+                    <div class="produk-item" style="width: 130px;">
+                        <div class="card" style="padding: 5px;">
+                            <img src="{{ asset('assets/produk_fotos/' . $p->foto) }}" class="card-img-top"
+                                 alt="{{ $p->nama_produk }}" 
+                                 style="width: 100%; height: 110px; object-fit: cover;">
+                            <div class="card-body text-center" style="padding: 6px;">
+                                <h5 class="card-title" style="font-size: 11px; margin-bottom: 4px;">{{ $p->nama_produk }}</h5>
+                                <p class="card-text" style="font-size: 11px; margin-bottom: 4px;">Rp{{ number_format($p->harga, 0, ',', '.') }}</p>
+                                <input type="number" id="jumlah-{{ $p->id }}" class="form-control mb-1" placeholder="Jumlah" min="1" value="1" 
+                                       style="font-size: 11px; padding: 3px; height: 24px; text-align: center;">
+                                <button onclick="tambahProduk({{ $p->id }}, '{{ $p->nama_produk }}', {{ $p->harga }})" 
+                                        class="btn btn-primary btn-sm" style="font-size: 11px; padding: 2px 8px;">
+                                    <i class="fas fa-shopping-cart"></i> 
+                                </button>                            
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Bagian Keranjang -->
+        <div class="col-md-4" style="margin-top: 60px;">
+            <div class="card shadow-sm border-0" style="font-size: 12px;">
+                <div class="card-header text-white" style="background-color: #2c3e50;">
+                    <h6 class="mb-0"><i class="fas fa-shopping-cart"></i> Keranjang</h6>
+                </div>
+                
+                <div class="card-body" style="padding: 10px;">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Produk</th>
+                                <th>Harga</th>
+                                <th>Jumlah</th>
+                                <th>Total</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="keranjang">
+                            <!-- Data keranjang akan masuk di sini -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- Total -->
+                    <div class="total-box text-right" style="font-size: 16px; margin-bottom: 10px;">
+                        <strong>Total : Rp <span id="totalBayar">0</span></strong>
+                    </div>
+
+                    <!-- Tombol Simpan -->
+                    <button type="button" id="btnSimpan" onclick="simpanTransaksi()" class="btn btn-sm text-white" 
+                    style="width: 100%; background-color: #89AC46; border-color: #89AC46;">
+                    <i class="fas fa-shopping-cart"></i> Simpan Keranjang
+                </button>                
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
 
 @push('script')
     <script>
-        let keranjang = [];
+         let keranjang = [];
 
-        function tambahProduk() {
-            let produk = document.getElementById('produk');
-            let jumlah = document.getElementById('jumlah').value;
+function tambahProduk(id, nama, harga) {
+    let jumlah = document.getElementById(`jumlah-${id}`).value;
+    if (jumlah <= 0) {
+        alert("Jumlah produk harus lebih dari 0.");
+        return;
+    }
 
-            if (jumlah <= 0) {
-                alert("Jumlah produk harus lebih dari 0.");
-                return;
-            }
+    let item = {
+        id: id,
+        nama: nama,
+        harga: parseFloat(harga),
+        jumlah: parseInt(jumlah),
+        subtotal: parseFloat(harga) * parseInt(jumlah)
+    };
 
-            let harga = produk.options[produk.selectedIndex].getAttribute('data-harga');
-            let nama = produk.options[produk.selectedIndex].text;
+    keranjang.push(item);
+    renderKeranjang();
+}
 
-            let item = {
-                id: produk.value,
-                nama: nama,
-                harga: parseFloat(harga),
-                jumlah: parseInt(jumlah),
-                subtotal: parseFloat(harga) * parseInt(jumlah)
-            };
+function renderKeranjang() {
+    let tbody = document.getElementById('keranjang');
+    tbody.innerHTML = "";
+    let total = 0;
 
-            keranjang.push(item);
-            renderKeranjang();
-        }
+    keranjang.forEach((item, index) => {
+        total += item.subtotal;
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.nama}</td>
+                <td>Rp${item.harga.toLocaleString('id-ID')}</td>
+                <td>${item.jumlah}</td>
+                <td>Rp${item.subtotal.toLocaleString('id-ID')}</td>
+                <td>
+                    <button onclick="hapusProduk(${index})" 
+                        style="
+                            background: #dc3545; 
+                            border: none; 
+                            padding: 4px 6px; 
+                            font-size: 12px; 
+                            color: white; 
+                            border-radius: 3px; 
+                            transition: 0.3s ease-in-out;
+                        " 
+                        onmouseover="this.style.background='#bd2130'" 
+                        onmouseout="this.style.background='#dc3545'">
+                        <i class="fas fa-trash" style="font-size: 10px;"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
 
-        function renderKeranjang() {
-            let tbody = document.getElementById('keranjang');
-            tbody.innerHTML = "";
-            let total = 0;
-
-            keranjang.forEach((item, index) => {
-                total += item.subtotal;
-                tbody.innerHTML += `
-        <tr>
-            <td>${item.nama}</td>
-            <td>Rp${item.harga.toLocaleString('id-ID')}</td>
-            <td>${item.jumlah}</td>
-            <td>Rp${item.subtotal.toLocaleString('id-ID')}</td>
-            <td>
-                <button onclick="hapusProduk(${index})" class="btn btn-danger">Hapus</button>
-            </td>
-        </tr>
-    `;
-            });
-
-            document.getElementById('totalBayar').innerText = total.toLocaleString('id-ID');
-        }
-
-        function hapusProduk(index) {
-            keranjang.splice(index, 1);
-            renderKeranjang();
-        }
+    document.getElementById('totalBayar').innerText = total.toLocaleString('id-ID');
+}
+function hapusProduk(index) {
+    keranjang.splice(index, 1);
+    renderKeranjang();
+}
         function simpanTransaksi() {
         let tipePelanggan = document.getElementById("tipe_pelanggan").value;
         let pelangganId = tipePelanggan === "member" ? document.getElementById("pelanggan").value : 0;
@@ -336,6 +398,5 @@
         formMember.style.display = "none";
     }
 }
-
     </script>
 @endpush

@@ -1,4 +1,4 @@
-@extends('admin.layouts.base')
+{{-- @extends('admin.layouts.base')
 
 @section('title', 'Transaksi Pembayaran')
 
@@ -133,4 +133,4 @@ function konfirmasiPembayaran() {
     });
 }
 </script>
-@endpush
+@endpush --}}

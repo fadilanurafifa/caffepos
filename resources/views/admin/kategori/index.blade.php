@@ -3,7 +3,6 @@
 @section('title', 'Manajemen Kategori')
 
 @section('content')
-
 @push('style')
 <style>
     .btn-custom {
@@ -36,17 +35,22 @@
     }
 </style>
 @endpush
-
 <div class="container">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="fas fa-folder"></i> Manajemen Kategori
+    </h1>
+    
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-custom" data-toggle="modal" data-target="#tambahKategoriModal" style="width: 150px; margin-bottom: 15px; border-radius: 5px; margin-top: -55px;">
+            <i class="fas fa-plus"></i> Tambah Kategori
+        </button>
+    </div>        
     <div class="card table-container">
-        <div class="card-header d-flex justify-content-between align-items-center">
+        {{-- <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title">
                 <i class="fas fa-folder-open"></i> Data Kategori
             </h3>
-            <button class="btn btn-custom" data-toggle="modal" data-target="#tambahKategoriModal">
-                <i class="fas fa-plus"></i> Tambah Kategori
-            </button> 
-        </div>
+        </div> --}}
         <div class="card-body">
             <div class="table-responsive">
                 <table id="kategoriTable" class="table table-bordered">

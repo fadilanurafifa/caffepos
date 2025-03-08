@@ -11,6 +11,15 @@ class Penjualan extends Model
 
     protected $table = 'penjualan'; // Nama tabel di database
 
+    protected $fillable = [
+        'no_faktur',
+        'tgl_faktur',
+        'total_bayar',
+        'pelanggan_id',
+        'user_id',
+        'metode_pembayaran',
+        'status_pembayaran',
+    ];
     protected $guarded = []; // Memungkinkan mass assignment tanpa batasan
 
     // Relasi ke Pelanggan
@@ -29,6 +38,10 @@ class Penjualan extends Model
     {
         return $this->hasMany(DetailPenjualan::class, 'penjualan_id');
     }
+
+    protected $casts = [
+        'total_bayar' => 'decimal:2', // Pastikan total_bayar ada di sini
+    ];
 
 }
 

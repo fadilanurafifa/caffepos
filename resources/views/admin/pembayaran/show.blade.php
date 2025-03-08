@@ -5,18 +5,18 @@
 
 @section('content')
 <div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i> Pembayaran - No Faktur: {{ $transaksi->no_faktur }}</h4>
-            <span class="badge {{ $transaksi->status_pembayaran == 'pending' ? 'bg-warning text-dark' : 'bg-success' }}">
-                {{ ucfirst($transaksi->status_pembayaran) }}
-            </span>
-        </div>
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="fas fa-receipt"></i> Pembayaran Nomor Faktur - {{ $transaksi->no_faktur }}
+        <span class="badge {{ $transaksi->status_pembayaran == 'pending' ? 'bg-warning text-dark' : 'bg-success' }} float-end">
+            {{ ucfirst($transaksi->status_pembayaran) }}
+        </span>        
+    </h1>
+ <div class="card shadow-sm">
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <label for="pelanggan" class="form-label"><strong>Pelanggan:</strong></label>
-                    <input type="text" id="pelanggan" class="form-control" value="{{ $transaksi->pelanggan->nama ?? 'Pelanggan Lain' }}" readonly>
+                    <input type="text" id="pelanggan" class="form-control" value="{{ $transaksi->pelanggan->nama ?? 'Pelanggan Biasa' }}" readonly>
                 </div>
                 <div class="col-md-6">
                     <label for="total_bayar" class="form-label"><strong>Total Bayar:</strong></label>
@@ -93,7 +93,14 @@
         <table style="width: 100%; text-align: left;">
             @foreach($detail_penjualan as $detail)
                 <tr>
-                    <td>{{ $detail->jumlah }} x {{ number_format($detail->sub_total / $detail->jumlah, 0, ',', '.') }}</td>
+                    <td>
+                        @if($detail->produk)
+                            {{ $detail->produk->nama_produk }}<br>
+                        @else
+                            <span class="text-danger">Produk tidak ditemukan</span><br>
+                        @endif
+                        {{ $detail->jumlah }} x {{ number_format($detail->sub_total / $detail->jumlah, 0, ',', '.') }}
+                    </td>
                     <td style="text-align: right;">Rp {{ number_format($detail->sub_total, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
@@ -106,6 +113,7 @@
         <p>Terima Kasih atas kunjungan Anda!<br>~ Kasir Caffe ~</p>
     </div>
 </div>
+
 @endsection
 
 @push('script')

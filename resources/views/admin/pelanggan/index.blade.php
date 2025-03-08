@@ -31,6 +31,16 @@
     }
 </style>
 <div class="container">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="fas fa-users"></i> Manajemen Member
+    </h1>
+    
+    
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-custom" data-toggle="modal" data-target="#tambahPelangganModal" style="width: 155px; margin-bottom: 15px; border-radius: 5px; margin-top: -55px; text">
+            <i class="fas fa-plus"></i> Tambah Member
+        </button>
+    </div>        
     <div class="card table-container">
         @if(session('success'))
         <script>
@@ -55,17 +65,6 @@
             });
         </script>
         @endif
-
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title">
-                <i class="fas fa-users"></i> Daftar Member
-            </h3>
-            
-            <button class="btn btn-custom mb-3" data-toggle="modal" data-target="#tambahPelangganModal">
-                <i class="fas fa-plus"></i> Tambah Member
-            </button>
-        </div>
-
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped" id="dataTable">

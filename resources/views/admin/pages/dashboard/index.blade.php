@@ -2,7 +2,7 @@
 @section('title', 'Dashboard')
 @section('content')
 <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
-<div class="row">
+{{-- <div class="row">
 
     <!-- Earnings (Monthly) Card Example -->
     
@@ -80,6 +80,82 @@
 
     <!-- Pending Requests Card Example -->
     <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Income (Pemasukan)
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            Rp {{ number_format($totalIncome, 0, ',', '.') }}
+                        </div>
+                        <small class="text-muted">{{ number_format($incomePercentage, 2) }}% dari target</small>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div> --}}
+
+<div class="row">
+    <!-- Member (Customer) Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Member (Customer)
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ $totalPelanggan }} Member
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+
+    <!-- Transaksi Penjualan Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Transaksi Penjualan
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    {{ number_format($persentase, 0) }}%
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="progress progress-sm mr-2">
+                                    <div class="progress-bar bg-info" role="progressbar"
+                                        style="width: {{ $persentase }}%" aria-valuenow="{{ $persentase }}" aria-valuemin="0"
+                                        aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+
+    <!-- Income (Pemasukan) Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">

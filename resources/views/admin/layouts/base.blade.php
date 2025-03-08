@@ -10,7 +10,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
-    <title>Caffe Kasir - @yield('title')</title>
+    <title> Cash POS - @yield('title')</title>
+
+    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -43,7 +45,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Caffe Kasir</div>
+                <div class="sidebar-brand-text mx-3">Cash POS</div>
             </a>
 
             <!-- Divider -->
@@ -82,7 +84,7 @@
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
+             {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBarang"
                 aria-expanded="true" aria-controls="collapseUtilities">
                 <i class="fas fa-box"></i> <!-- Ganti ikon di sini -->
@@ -95,7 +97,7 @@
                         <a class="collapse-item" href="{{ route('barang.index') }}">Daftar Barang</a>
                     </div>
                 </div>
-            </li>
+            </li>  --}}
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduk"
                 aria-expanded="true" aria-controls="collapseProduk">
@@ -110,7 +112,7 @@
                     </div>
                 </div>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSupplier"
                 aria-expanded="true" aria-controls="collapseUtilities">
                  <i class="fas fa-fw fa-truck"></i>
@@ -123,7 +125,7 @@
                         <a class="collapse-item" href="{{ route('pemasok.index') }}">Data Supplier</a>
                     </div>
                 </div>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePelanggan"
                 aria-expanded="true" aria-controls="collapseUtilities">
@@ -164,38 +166,52 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHistory"
                 aria-expanded="true" aria-controls="collapsePenjualan">
-                 <i class="fas fa-fw fa-shopping-cart"></i>
-                 <span>History Transaksi</span>
+                <i class="fas fa-receipt"></i>
+                 <span>Laporan Transaksi</span>
              </a>             
                 <div id="collapseHistory" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manajemen History</h6>
-                        <a class="collapse-item" href="{{ route('history.penjualan') }}">History Transaksi </a>
+                        <h6 class="collapse-header">Manajemen Transaksi</h6>
+                        <a class="collapse-item" href="{{ route('history.penjualan') }}">Laporan Transaksi </a>
                     </div>
                 </div>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
-                    aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Sistem Akses</span>
-                </a>
-                <div id="collapsePages" class="collapse show" aria-labelledby="headingPages"
-                data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Login Screens:</h6>
-                    <a class="collapse-item" href="login.html">Login</a>
-                    <a class="collapse-item cursor-pointer" href="#" 
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                     Logout
-                    </a>
-                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
-                     @csrf
-                    </form>                 
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan"
+                aria-expanded="true" aria-controls="collapsePenjualan">
+                <i class="fas fa-chart-bar"></i>
+                 <span>Laporan Penjualan Menu</span>
+             </a>             
+                <div id="collapseLaporan" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manajemen Laporan</h6>
+                        <a class="collapse-item" href="{{ route('admin.laporan.penjualan') }}">Laporan Penjualan </a>
+                    </div>
                 </div>
-            </div>
-            
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAkses"
+                aria-expanded="true" aria-controls="collapsePenjualan">
+                 <i class="fas fa-lock"></i>
+                 <span>Sistem Akses</span>
+                </a>   
+                <div id="collapseAkses" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Login Screen</h6>
+                        <a class="collapse-item" href="login.html">Login</a>
+                        <a class="collapse-item cursor-pointer" href="#" 
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                         Logout
+                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>    
+                        </a>
+                    </div>
+                </div>
             </li>
 
             <!-- Nav Item - Charts -->
@@ -238,18 +254,18 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
                                 aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
+                                <button class="btn" type="button" style="background-color: #2c3e50; color: white;">
                                     <i class="fas fa-search fa-sm"></i>
                                 </button>
                             </div>
                         </div>
                     </form>
+                    
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -400,11 +416,13 @@
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="{{ asset('assets/img/undraw_profile.svg') }}">
-                            </a>
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                {{ Auth::user()->name }} Cash POS
+                            </span>
+                            <img class="img-profile rounded-circle"
+                                src="{{ asset('assets/img/undraw_profile.svg') }}">
+                            </a>                        
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">

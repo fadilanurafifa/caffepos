@@ -1,33 +1,43 @@
 @extends('admin.layouts.base')
 
-@section('title', 'History Penjualan')
+@section('title', 'Laporan Transaksi')
 
 @push('style')
 <style>
-    .btn-custom {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 8px 14px;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-        white-space: nowrap;
+   .btn-custom {
+    background-color: #89AC46; /* Warna hijau sesuai permintaan */
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
     }
 
-    .btn-custom:hover,
-    .btn-custom:focus,
-    .btn-custom:active {
-        background-color: #0056b3 !important;
+    .btn-custom:hover {
+        background-color: #89AC46 !important; /* Tetap hijau saat hover */
         color: white !important;
-        box-shadow: none !important;
-        outline: none !important;
     }
     .table-container {
         padding: 20px;
     }
+    .table {
+        font-size: 16px; 
+    }
     .table th, .table td {
-        vertical-align: middle !important;
+        padding: 6px; 
+    }
+    .modal-dialog {
+        max-width: 400px; 
+    }
+    .modal-content {
+        padding: 8px; 
+    }
+    .modal-body {
+        padding: 10px;
+    }
+    .modal-footer {
+        padding: 5px;
     }
     .hidden {
         display: none;
@@ -35,82 +45,84 @@
 </style>
 @endpush
 
+
 @section('content')
 <div class="container mt-4">
-    <div class="card table-container">
-        <div class="card-header border-bottom fw-bold">
-            <h4 class="mb-0 text-dark"><i class="fas fa-history me-2"></i> History Penjualan</h4>
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="fas fa-receipt"></i> Laporan Transaksi
+    </h1>    
+    @php
+    $totalIncome = $transaksi->where('status_pembayaran', 'lunas')->sum('total_bayar');
+    @endphp
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+       <!-- Button Filter (Kiri) -->
+        <div class="d-flex gap-3">
+            <button class="btn btn-custom d-flex align-items-center" onclick="filterTable('all')">
+                <i class="fas fa-list me-2"></i> Semua Transaksi
+            </button>
+            <button class="btn btn-custom d-flex align-items-center" onclick="filterTable('member')">
+                <i class="fas fa-user-check me-2"></i> Pelanggan Member
+            </button>
+            <button class="btn btn-custom d-flex align-items-center" onclick="filterTable('biasa')">
+                <i class="fas fa-user me-2"></i> Pelanggan Biasa
+            </button>
         </div>
-        
+        <!-- Box Total Income (Kanan) -->
+        <div class="card shadow-sm border-0" style="background: white; border-radius: 10px; padding: 15px; border-left: 4px solid #28a745; min-width: 250px;">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fas fa-wallet fa-lg text-success"></i>
+                </div>
+                <div>
+                    <h6 class="mb-1 text-muted" style="font-size: 14px;">Total Pemasukan</h6>
+                    <h4 class="fw-bold m-0 text-dark">Rp {{ number_format($totalIncome, 0, ',', '.') }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <div class="card table-container">
         <div class="card-body">
-            <div class="mb-3 d-flex gap-3">
-                <button class="btn btn-custom btn-member" onclick="showTable('memberTable')">
-                    <i class="fas fa-user-check"></i> Tampilkan Pelanggan Member
-                </button>
-                <button class="btn btn-custom btn-nonmember" onclick="showTable('nonMemberTable')">
-                    <i class="fas fa-user-times"></i> Tampilkan Pelanggan Lain
-                </button>
-            </div>
-            
-            <div class="table-responsive" id="memberTableContainer">
-                <h5 class="text-dark fw-bold">Pelanggan Member</h5>
-                <table id="memberTable" class="table table-bordered">
+            <div class="table-responsive">
+                <table id="transaksiTable" class="table table-bordered">
                     <thead class="thead-light">
                         <tr class="text-center">
                             <th>ID Penjualan</th>
                             <th>Nama Pelanggan</th>
+                            <th>Tipe Pelanggan</th> <!-- Tambahkan ini -->
                             <th>Metode Pembayaran</th>
-                            <th>Action</th>
+                            <th>Total Harga</th>
+                            <th>Tanggal Transaksi</th>
+                            <th>Aksi</th>
                         </tr>
-                    </thead>                    
+                    </thead>                                 
                     <tbody>
                         @foreach($detailTransaksi as $penjualan_id => $details)
-                        @php $penjualan = $transaksi[$penjualan_id]; @endphp
-                        @if($penjualan->pelanggan)
-                        <tr>
+                        @php $penjualan = $transaksi[$penjualan_id] ?? null; @endphp
+                        @if($penjualan)
+                        <tr class="transaksi-row" data-type="{{ $penjualan->pelanggan ? 'member' : 'biasa' }}">
                             <td class="text-center align-middle">{{ $penjualan_id }}</td>
-                            <td class="align-middle">{{ $penjualan->pelanggan->nama }}</td>
+                            <td class="align-middle">
+                                {{ $penjualan->pelanggan ? $penjualan->pelanggan->nama : 'Pelanggan Biasa' }}
+                            </td>
+                            <td class="align-middle">
+                                <span style="font-weight: bold; color: {{ $penjualan->pelanggan ? 'green' : 'red' }};">
+                                    {{ $penjualan->pelanggan ? 'Member' : 'Non-Member' }}
+                                </span>
+                            </td>                            
                             <td class="align-middle">Cash</td>
-                            <td class="text-center align-middle">
+                            <td class="align-middle">Rp.{{ number_format($penjualan->total_bayar, 0, ',', '.') }}</td>
+                            <td class="align-middle">{{ $penjualan->created_at->format('d-m-Y H:i') }}</td>
+                            <td class="align-middle">
                                 <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalDetail{{ $penjualan_id }}">
-                                    <i class="fas fa-eye"></i> Detail
+                                    <i class="fas fa-eye"></i> 
                                 </button>
                             </td>
                         </tr>
                         @endif
                         @endforeach
                     </tbody>
-                </table>
-            </div>
-
-            <div class="table-responsive hidden" id="nonMemberTableContainer">
-                <h5 class="text-dark fw-bold">Pelanggan Lain</h5>
-                <table id="nonMemberTable" class="table table-bordered">
-                    <thead class="thead-light">
-                        <tr class="text-center">
-                            <th>ID Penjualan</th>
-                            <th>Nama Pelanggan</th>
-                            <th>Metode Pembayaran</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>                    
-                    <tbody>
-                        @foreach($detailTransaksi as $penjualan_id => $details)
-                        @php $penjualan = $transaksi[$penjualan_id]; @endphp
-                        @if(!$penjualan->pelanggan)
-                        <tr>
-                            <td class="text-center align-middle">{{ $penjualan_id }}</td>
-                            <td class="align-middle">Pelanggan Lain</td>
-                            <td class="align-middle">Cash</td>
-                            <td class="text-center align-middle">
-                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalDetail{{ $penjualan_id }}">
-                                    <i class="fas fa-eye"></i> Detail
-                                </button>
-                            </td>
-                        </tr>
-                        @endif
-                        @endforeach
-                    </tbody>
+                    
                 </table>
             </div>
         </div>
@@ -118,19 +130,20 @@
 </div>
 
 @foreach($detailTransaksi as $penjualan_id => $details)
-@php $penjualan = $transaksi[$penjualan_id]; @endphp
+@php $penjualan = $transaksi[$penjualan_id] ?? null; @endphp
+@if($penjualan)
 <div class="modal fade" id="modalDetail{{ $penjualan_id }}" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog" style="max-width: 500px;">
+        <div class="modal-content" style="padding: 10px;">
             <div class="modal-header">
                 <h5 class="modal-title">Detail Transaksi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table">
+                <table class="table table-sm">
                     <thead>
                         <tr>
-                            <th>Nama Produk</th>
+                            <th>Produk</th>
                             <th>Jumlah</th>
                             <th>Subtotal</th>
                         </tr>
@@ -138,23 +151,24 @@
                     <tbody>
                         @foreach($details as $detail)
                         <tr>
-                            <td>{{ $detail->produk->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
+                            <td>{{ optional($detail->produk)->nama_produk ?? 'Produk Tidak Ditemukan' }}</td>
                             <td>{{ $detail->jumlah }}</td>
                             <td>Rp {{ number_format($detail->sub_total, 0, ',', '.') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-
-                {{-- {{$penjualan}} --}}
-                <p><strong>Status:</strong> {{ $penjualan->status_pembayaran }}</p>
+                <p class="mt-2" style="font-size: 14px; background-color: #d1ecf1; padding: 6px 12px; border-radius: 5px; color: #0c5460; font-weight: bold;">
+                    <strong>Status Pembayaran :</strong> {{ ucfirst($penjualan->status_pembayaran) }}
+                </p>                              
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
 </div>
+@endif
 @endforeach
 @endsection
 
@@ -163,8 +177,36 @@
 <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 <script>
 $(document).ready(function() {
+    $('#transaksiTable').DataTable({
+        "language": {
+            "searchPlaceholder": "Cari Transaksi...",
+            "zeroRecords": "Tidak ada transaksi ditemukan"
+        }
+    });
+});
+
+function filterTable(type) {
+    if (type === 'all') {
+        $('.transaksi-row').show();
+    } else {
+        $('.transaksi-row').hide();
+        $('.transaksi-row[data-type="' + type + '"]').show();
+    }
+}
+</script>
+@endpush
+
+
+{{-- @push('script')
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+<script>
+$(document).ready(function() {
     $('#memberTable').DataTable();
     $('#nonMemberTable').DataTable();
+
+    // Tambahkan placeholder "Cari Transaksi" pada input search DataTables
+    $('.dataTables_filter input').attr("placeholder", "Cari Transaksi...");
 });
 
 function showTable(tableId) {
@@ -177,4 +219,4 @@ function showTable(tableId) {
     }
 }
 </script>
-@endpush
+@endpush --}}
