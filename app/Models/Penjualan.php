@@ -17,7 +17,7 @@ class Penjualan extends Model
         'total_bayar',
         'pelanggan_id',
         'user_id',
-        'metode_pembayaran',
+        'metode_pembayar',
         'status_pembayaran',
     ];
     protected $guarded = []; // Memungkinkan mass assignment tanpa batasan
