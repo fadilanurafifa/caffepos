@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Penjualan;
 use App\Models\DetailPenjualan;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PembayaranController extends Controller
 {
@@ -12,7 +13,7 @@ class PembayaranController extends Controller
         // Ambil transaksi berdasarkan no_faktur
         $transaksi = Penjualan::where('no_faktur', $no_faktur)->first();
     
-        // Jika transaksi tidak ditemukan, kembalikan error
+        // Jika transaksi tidak ditemukan, kembalikan error 
         if (!$transaksi) {
             return redirect()->route('admin.pembayaran.index')->with('error', 'Transaksi tidak ditemukan.');
         }
@@ -74,6 +75,23 @@ class PembayaranController extends Controller
             ->with('jumlah_bayar', $jumlah_bayar)
             ->with('kembalian', $kembalian);
     }
+    public function print($no_faktur)
+    {
+        // Cari transaksi berdasarkan no_faktur di tabel penjualan
+        $transaksi = Penjualan::where('no_faktur', $no_faktur)->first();
+    
+        // Jika transaksi tidak ditemukan, kembalikan error
+        if (!$transaksi) {
+            return back()->with('error', 'Transaksi tidak ditemukan');
+        }
+    
+        // Ambil detail penjualan berdasarkan penjualan_id
+        $detail_penjualan = DetailPenjualan::where('penjualan_id', $transaksi->id)->get();
+    
+        // Kirim data ke view
+        return view('admin.pembayaran.struk', compact('transaksi', 'detail_penjualan'));
+    }
+    
     
     
     

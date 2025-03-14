@@ -29,6 +29,157 @@
     <link href="{{ asset('assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
 
     @stack('style')
+    <style>
+    #accordionSidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh; 
+        overflow-y: auto; 
+        z-index: 1000; 
+    }
+    .notification-icon {
+        font-size: 16px; 
+    }
+
+    .notification-badge {
+        top: 5px !important;  
+        right: 4px !important; 
+        font-size: 8px; 
+        padding: 2px 4px;
+        transform: translate(50%, -50%);
+        min-width: 14px;
+        min-height: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .notification-dropdown {
+    width: 350px; /* Lebarkan dropdown agar lebih rapi */
+    border-radius: 10px;
+}
+
+.dropdown-header {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.notification-text {
+    flex: 1;
+}
+
+.notification-text small {
+    display: block;
+}
+.notification-dropdown {
+    width: 400px; /* Lebarkan dropdown agar lebih luas */
+    max-height: 500px; /* Tambahkan batas tinggi jika banyak notifikasi */
+    overflow-y: auto; /* Tambahkan scroll jika notifikasi terlalu banyak */
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.dropdown-header {
+    font-size: 16px; /* Perbesar ukuran teks header */
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 8px; /* Tambahkan padding agar lebih rapi */
+}
+
+.notification-avatar {
+    width: 45px; /* Perbesar avatar */
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.notification-text {
+    flex: 1;
+    font-size: 14px; /* Perbesar teks */
+}
+
+.notification-text small {
+    display: block;
+    font-size: 12px;
+}
+.notification-dropdown {
+    width: 400px !important;  /* Lebarkan dropdown */
+    max-height: 500px; /* Batasi tinggi untuk mencegah terlalu panjang */
+    overflow-y: auto; /* Tambahkan scroll jika notifikasi terlalu banyak */
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.notification-header {
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px;
+    background-color: #007bff; /* Warna biru seperti gambar */
+    color: white;
+    border-radius: 8px;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+}
+
+.notification-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.notification-text {
+    flex: 1;
+    font-size: 14px;
+}
+
+.notification-text small {
+    display: block;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.notification-badge {
+    top: -5px !important;  /* Sesuaikan agar lebih dekat ke ikon */
+    right: -5px !important; /* Geser lebih dekat ke ikon */
+    font-size: 10px;
+    padding: 3px 6px;
+    min-width: 16px;
+    min-height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+    </style>
 
 </head>
 
@@ -41,7 +192,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -52,22 +203,25 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
+            @if (Auth::user()->role === 'admin' || (Auth::user()->role === 'owner'))
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
             </li>            
-
+            @endif
             <!-- Divider -->
+            @if (Auth::user()->role === 'admin' || (Auth::user()->role === 'kasir'))
             <hr class="sidebar-divider">
-
             <!-- Heading -->
             <div class="sidebar-heading">
                 MENU
             </div>
+            @endif
 
             <!-- Nav Item - Pages Collapse Menu -->
+            @if (Auth::user()->role === 'admin')
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                 aria-expanded="true" aria-controls="collapseTwo">
@@ -82,7 +236,7 @@
                     </div>
                 </div>
             </li>
-
+            @endif
             <!-- Nav Item - Utilities Collapse Menu -->
              {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBarang"
@@ -98,6 +252,7 @@
                     </div>
                 </div>
             </li>  --}}
+            @if (Auth::user()->role === 'admin' || Auth::user()->role === 'kasir')
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduk"
                 aria-expanded="true" aria-controls="collapseProduk">
@@ -112,6 +267,7 @@
                     </div>
                 </div>
             </li>
+            @endif
             {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSupplier"
                 aria-expanded="true" aria-controls="collapseUtilities">
@@ -126,6 +282,7 @@
                     </div>
                 </div>
             </li> --}}
+            @if (Auth::user()->role === 'kasir' || Auth::user()->role === 'admin')
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePelanggan"
                 aria-expanded="true" aria-controls="collapseUtilities">
@@ -140,7 +297,7 @@
                     </div>
                 </div>
             </li>
-
+            @endif
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -149,11 +306,12 @@
                 TRANSAKSI
             </div>
             <!-- Nav Item - Pages Collapse Menu -->
+            @if (Auth::user()->role === 'kasir' || Auth::user()->role === 'admin')
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePenjualan"
                 aria-expanded="true" aria-controls="collapsePenjualan">
                  <i class="fas fa-fw fa-shopping-cart"></i>
-                 <span>Manajemen Transaksi</span>
+                 <span>Manajemen Menu</span>
              </a>             
                 <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
@@ -163,6 +321,8 @@
                     </div>
                 </div>
             </li>
+            @endif
+            @if (Auth::user()->role === 'admin' || (Auth::user()->role === 'owner'))
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHistory"
                 aria-expanded="true" aria-controls="collapsePenjualan">
@@ -181,16 +341,48 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan"
                 aria-expanded="true" aria-controls="collapsePenjualan">
                 <i class="fas fa-chart-bar"></i>
-                 <span>Laporan Penjualan Menu</span>
+                 <span>Laporan Penjualan</span>
              </a>             
                 <div id="collapseLaporan" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manajemen Laporan</h6>
+                        <h6 class="collapse-header">Manajemen Penjualan</h6>
                         <a class="collapse-item" href="{{ route('admin.laporan.penjualan') }}">Laporan Penjualan </a>
                     </div>
                 </div>
             </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporanProduk"
+                aria-expanded="true" aria-controls="collapsePenjualan">
+                <i class="fas fa-clipboard-list"></i>
+                 <span>Laporan Data Produk</span>
+             </a>             
+                <div id="collapseLaporanProduk" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manajemen Produk</h6>
+                        <a class="collapse-item" href="{{ route('laporan.produk') }}">Laporan Produk </a>
+                    </div>
+                </div>
+            </li>
+            @endif
+
+            @if (Auth::user()->role === 'chef')
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseChef"
+                aria-expanded="true" aria-controls="collapsePenjualan">
+                <i class="fas fa-clipboard-list"></i>
+                 <span>Daftar Pesanan</span>
+             </a>             
+                <div id="collapseChef" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manajemen Chef</h6>
+                        <a class="collapse-item" href="{{ route('chef.index') }}">Pesanan</a>
+                    </div>
+                </div>
+            </li>
+            @endif
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAkses"
@@ -240,7 +432,7 @@
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content-wrapper" class="d-flex flex-column" style="margin-left: 250px;">
 
             <!-- Main Content -->
             <div id="content">
@@ -294,59 +486,49 @@
                             </div>
                         </li>
 
+                        @if (Auth::user()->role === 'kasir' || Auth::user()->role === 'admin')
                         <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center position-relative" href="#" id="notifikasiDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="position-relative">
+                                    <i class="fas fa-bell fa-fw notification-icon"></i>
+                                    @if(Auth::user()->unreadNotifications->count() > 0)
+                                        <span class="badge rounded-pill bg-danger position-absolute notification-badge">
+                                            {{ Auth::user()->unreadNotifications->count() }}
+                                        </span>
+                                    @endif
+                                </span>
                             </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Alerts Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-file-alt text-white"></i>
+                        
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg p-3 notification-dropdown" aria-labelledby="notifikasiDropdown">
+                                <li class="dropdown-header fw-bold text-white bg-primary p-2 rounded d-flex align-items-center">
+                                    <i class="bi bi-app-indicator me-2"></i> STATUS NOTIFIKASI
+                                </li>                                
+                                @forelse(Auth::user()->unreadNotifications as $notification)
+                                    <li class="notification-item d-flex align-items-center p-2">
+                                        <div class="notification-text">
+                                            <a href="#" class="dropdown-item text-wrap fw-bold text-dark">{{ $notification->data['message'] }}
+                                            <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                        </a>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="fas fa-donate text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 7, 2019</div>
-                                        $290.29 has been deposited into your account!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
-                                        Spending Alert: We've noticed unusually high spending for your account.
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                            </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                @empty
+                                    <li class="dropdown-item text-muted text-center">Tidak ada notifikasi</li>
+                                @endforelse
+                            
+                                <li class="text-center">
+                                    <form action="{{ route('kasir.readNotifications') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-primary">Tandai Semua Dibaca</button>
+                                    </form>
+                                </li>
+                            </ul>
+                            
                         </li>
-
+                        @endif
                         <!-- Nav Item - Messages -->
-                        <li class="nav-item dropdown no-arrow mx-1">
+                        {{-- <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
@@ -409,7 +591,7 @@
                                 </a>
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
                             </div>
-                        </li>
+                        </li> --}}
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -452,7 +634,7 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container bg-white">
 
                     <!-- Page Heading -->
                     @yield('content')

@@ -19,6 +19,12 @@ class RoleMiddleware
             return redirect('/')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }        
 
+        if (Auth::user() && Auth::user()->role->name == 'chef') {
+            return $next($request);
+            
+            return redirect('/')->with('error', 'Anda tidak memiliki akses!');
+        }
+
         return $next($request);
     }
 }

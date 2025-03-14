@@ -4,12 +4,53 @@
 @section('title', 'Pembayaran - ' . $transaksi->no_faktur)
 
 @section('content')
+@push('style')
+    <style>
+    .btn-cetak-struk {
+        background-color: #007bff; 
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        white-space: nowrap; 
+        margin-top: 15px;
+    }
+    .btn-cetak-struk:hover,
+    .btn-cetak-struk:focus,
+    .btn-cetak-struk:active {
+        background-color: #007bff !important; 
+        color: white !important; 
+        box-shadow: none !important; 
+        outline: none !important; 
+    }
+    .badge-custom {
+        /* background-color: #89AC46 !important;  */
+        color: #89AC46 !important; 
+        padding: 6px 12px;
+        font-size: 25px;
+        border-radius: 8px; 
+    }
+        /* Custom Success Button */
+    .btn-custom-success {
+        background-color: #89AC46 !important; /* Warna hijau */
+        color: white !important; /* Warna teks tetap terlihat */
+        border: none;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 6px;
+        /* cursor: not-allowed; /* Indikasi tombol nonaktif */
+        /* opacity: 0.8; */
+    }
+    </style>
+@endpush
 <div class="container mt-4">
     <h1 class="h3 mb-4 text-gray-800">
-        <i class="fas fa-receipt"></i> Pembayaran Nomor Faktur - {{ $transaksi->no_faktur }}
-        <span class="badge {{ $transaksi->status_pembayaran == 'pending' ? 'bg-warning text-dark' : 'bg-success' }} float-end">
+        <i class="fas fa-receipt"></i> Pembayaran Nomor Faktur -> {{ $transaksi->no_faktur }}
+        <span class="badge {{ $transaksi->status_pembayaran == 'pending' ? 'badge-custom text-dark' : 'badge-custom' }} float-end">
             {{ ucfirst($transaksi->status_pembayaran) }}
-        </span>        
+        </span>             
     </h1>
  <div class="card shadow-sm">
         <div class="card-body">
@@ -73,47 +114,18 @@
                     <button type="submit" class="btn btn-success w-100 mt-3"><i class="fas fa-check-circle"></i> Bayar Sekarang</button>
                 </form>
             @else
-                <button class="btn btn-secondary w-100 mt-3" disabled><i class="fas fa-check"></i> Lunas</button>
-                <button id="printReceipt" class="btn btn-dark w-100 mt-2"><i class="fas fa-print"></i> Cetak Struk</button>
-            @endif
+            <button class="btn btn-custom-success w-100 mt-3" disabled>
+                <i class="fas fa-check"></i> Sukses melakukan pembayaran!
+            </button>
+            <a href="{{ route('admin.pembayaran.print', $transaksi->no_faktur) }}" 
+                class="btn btn-cetak-struk" 
+                target="_blank">
+                <i class="fas fa-print"></i> Cetak Struk
+             </a>                                                   
+                @endif
         </div>
     </div>
 </div>
-
-<!-- Modal Struk -->
-<div id="receiptModal" class="d-none">
-    <div id="receipt" style="width: 250px; font-family: 'Courier New', Courier, monospace; text-align: center; padding: 10px; border: 1px solid #000;">
-        <img src="{{ asset('assets/img/kasir.png') }}" alt="Logo" style="width: 50px; margin-bottom: 10px;">
-        <h4>Kasir Caffe</h4>
-        <p>Jalan Merdeka Belajar No.12<br>Bandung - Jawa Barat</p>
-        <hr>
-        <p>No Faktur: {{ $transaksi->no_faktur }}</p>
-        <p>Tanggal: {{ date('d-m-Y H:i', strtotime($transaksi->created_at)) }}</p>
-        <hr>
-        <table style="width: 100%; text-align: left;">
-            @foreach($detail_penjualan as $detail)
-                <tr>
-                    <td>
-                        @if($detail->produk)
-                            {{ $detail->produk->nama_produk }}<br>
-                        @else
-                            <span class="text-danger">Produk tidak ditemukan</span><br>
-                        @endif
-                        {{ $detail->jumlah }} x {{ number_format($detail->sub_total / $detail->jumlah, 0, ',', '.') }}
-                    </td>
-                    <td style="text-align: right;">Rp {{ number_format($detail->sub_total, 0, ',', '.') }}</td>
-                </tr>
-            @endforeach
-        </table>
-        <hr>
-        <p>Total: Rp {{ number_format($transaksi->total_bayar, 0, ',', '.') }}</p>
-        <p>Bayar: Rp {{ number_format($transaksi->total_bayar, 0, ',', '.') }}</p>
-        <p>Kembalian: Rp 0</p>
-        <hr>
-        <p>Terima Kasih atas kunjungan Anda!<br>~ Kasir Caffe ~</p>
-    </div>
-</div>
-
 @endsection
 
 @push('script')
@@ -161,16 +173,6 @@
                 }
             });
         });
-    });
-</script>
-<script>
-    document.getElementById("printReceipt").addEventListener("click", function () {
-        let printContent = document.getElementById("receipt").innerHTML;
-        let originalContent = document.body.innerHTML;
-        document.body.innerHTML = printContent;
-        window.print();
-        document.body.innerHTML = originalContent;
-        location.reload();
     });
 </script>
 @endpush

@@ -88,7 +88,7 @@
             font-size: 12px;
             padding: 2px;
         }
-        .card-footer {
+        /* .card-footer {
             font-size: 14px;
             padding: 10px;
         }
@@ -97,7 +97,7 @@
             padding: 8px;
             flex: 1;
             white-space: nowrap;
-        }
+        } */
         .d-flex.gap-2 {
             display: flex;
             gap: 5px;
@@ -140,6 +140,30 @@
         color: white !important; 
         box-shadow: none !important; 
         outline: none !important; 
+    }
+    .modal-dialog {
+        max-width: 400px; 
+    }
+    .modal-content {
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .modal-body {
+        padding: 15px;
+        background: #f8f9fa;
+    }
+    .form-group label {
+        font-weight: bold;
+        font-size: 13px;
+        color: #333;
+        margin-bottom: 4px;
+    }
+    .form-control {
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        padding: 6px 10px; 
+        font-size: 13px; 
+        height: 32px; 
     }
     </style>
 
@@ -195,12 +219,12 @@
             <div class="col-lg-12">
                 <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 g-2">
                     @foreach ($produk as $prd)
-                        <div class="col produk-card" data-id="{{ $prd->id }}"
+                        <div class="col" data-id="{{ $prd->id }}"
                             data-nama="{{ strtolower($prd->nama_produk) }}" data-harga="{{ $prd->harga }}"
                             data-foto="{{ asset('assets/produk_fotos/' . $prd->foto) }}"
                             data-kategori="{{ strtolower($prd->kategori ? $prd->kategori->nama_kategori : 'tanpa kategori') }}">
             
-                            <div class="card border-0 shadow-sm h-100" style="max-width: 120px;">
+                            <div class="produk-card border-0 shadow-sm h-100" style="max-width: 120px;">
                                 <img src="{{ asset('assets/produk_fotos/' . $prd->foto) }}"
                                     class="card-img-top img-fluid rounded-top"
                                     style="height: 100px; object-fit: cover;">
@@ -307,7 +331,6 @@
             </div>
         </div>
     </div>
-@endsection
 
 @push('script')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -453,3 +476,4 @@
     
     
 @endpush
+@endsection

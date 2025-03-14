@@ -33,6 +33,30 @@
     .search-container {
         margin-bottom: 15px;
     }
+    .modal-dialog {
+        max-width: 400px; 
+    }
+    .modal-content {
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .modal-body {
+        padding: 15px;
+        background: #f8f9fa;
+    }
+    .form-group label {
+        font-weight: bold;
+        font-size: 13px;
+        color: #333;
+        margin-bottom: 4px;
+    }
+    .form-control {
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        padding: 6px 10px; 
+        font-size: 13px; 
+        height: 32px; 
+    }
 </style>
 @endpush
 <div class="container">

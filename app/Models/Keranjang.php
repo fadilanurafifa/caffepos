@@ -1,23 +1,24 @@
 <?php
-namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+// namespace App\Models;
 
-class Keranjang extends Model {
-    use HasFactory;
+// use Illuminate\Database\Eloquent\Factories\HasFactory;
+// use Illuminate\Database\Eloquent\Model;
 
-    protected $table = 'keranjang'; // Pastikan tabel sesuai di database
+// class Keranjang extends Model {
+//     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'produk_id',
-        'jumlah',
-        'sub_total'
-    ];
+//     protected $table = 'keranjang'; 
 
-    // Relasi ke Produk
-    public function produk() {
-        return $this->belongsTo(Produk::class, 'produk_id');
-    }
-}
+//     protected $fillable = [
+//         'user_id',
+//         'produk_id',
+//         'jumlah',
+//         'sub_total'
+//     ];
+
+//     // Relasi ke Produk
+//     public function produk() {
+//         return $this->belongsTo(Produk::class, 'produk_id');
+//     }
+// }

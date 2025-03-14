@@ -14,8 +14,8 @@
             <div class="w-20 h-20 mx-auto flex items-center justify-center bg-gray-700 rounded-full">
                 <i class="fa-solid fa-face-grin-wink text-white text-6xl"></i>
             </div>
-            <h2 class="text-2xl font-semibold text-white">Welcome Back</h2>
-            <p class="text-gray-300 text-sm">Log in now to continue</p>
+            <h2 class="text-2xl font-semibold text-white">Selamat Datang!</h2>
+            <p class="text-gray-300 text-sm">Masuk sekarang untuk melanjutkan</p>
         </div>        
 
         @if ($errors->any())
@@ -35,7 +35,7 @@
                     <span class="text-gray-400">
                         <i class="fa-solid fa-envelope"></i>
                     </span>
-                    <input type="email" name="email" required placeholder="Enter your email address" class="w-full bg-transparent outline-none px-2 text-white">
+                    <input type="email" name="email" required placeholder="Masukan email" class="w-full bg-transparent outline-none px-2 text-white">
                 </div>
             </div>
 
@@ -45,7 +45,7 @@
                     <span class="text-gray-400">
                         <i class="fa-solid fa-lock"></i>
                     </span>
-                    <input type="password" name="password" required placeholder="Enter your password" class="w-full bg-transparent outline-none px-2 text-white">
+                    <input type="password" name="password" required placeholder="Masukan password" class="w-full bg-transparent outline-none px-2 text-white">
                 </div>
             </div>
 

@@ -105,4 +105,10 @@ class PenjualanController extends Controller
             ], 400);
         }
     }  
+    public function notifications()
+    {
+        $notifications = Auth::user()->notifications; // Ambil notifikasi kasir yang login
+        return view('kasir.notifications', compact('notifications'));
+    }
+    
 }

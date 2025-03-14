@@ -19,6 +19,7 @@ class Penjualan extends Model
         'user_id',
         'metode_pembayar',
         'status_pembayaran',
+        'status_pesanan',
     ];
     protected $guarded = []; // Memungkinkan mass assignment tanpa batasan
 
@@ -42,6 +43,21 @@ class Penjualan extends Model
     protected $casts = [
         'total_bayar' => 'decimal:2', // Pastikan total_bayar ada di sini
     ];
+    public function detail_penjualan()
+    {
+        return $this->hasMany(DetailPenjualan::class, 'penjualan_id', 'id');
+    }
+
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'produk_id');
+    }
+
+    // Relasi ke Order
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'penjualan_id');
+    }
 
 }
 

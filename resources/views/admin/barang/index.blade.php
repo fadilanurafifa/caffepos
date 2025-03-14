@@ -1,4 +1,4 @@
-@extends('admin.layouts.base')
+{{-- @extends('admin.layouts.base')
 
 @section('title', 'Manajemen Barang')
 
@@ -259,4 +259,4 @@ $(document).ready(function() {
 });
 </script>
 @endpush
-
+ --}}

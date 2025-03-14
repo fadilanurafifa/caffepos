@@ -1,55 +1,55 @@
 <?php
 
-namespace App\Http\Controllers;
+// namespace App\Http\Controllers;
 
-use App\Models\Pemasok;
-use Illuminate\Http\Request;
+// use App\Models\Pemasok;
+// use Illuminate\Http\Request;
 
-class PemasokController extends Controller
-{
-    public function index()
-    {
-        $pemasok = Pemasok::latest()->paginate(5);
-        return view('admin.pemasok.index', compact('pemasok'));
-    }
-    public function store(Request $request) {
-        $request->validate([
-            'nama_pemasok' => 'required|string|max:255',
-        ]);
+// class PemasokController extends Controller
+// {
+//     public function index()
+//     {
+//         $pemasok = Pemasok::latest()->paginate(5);
+//         return view('admin.pemasok.index', compact('pemasok'));
+//     }
+//     public function store(Request $request) {
+//         $request->validate([
+//             'nama_pemasok' => 'required|string|max:255',
+//         ]);
     
-        $pemasok = Pemasok::create([
-            'nama_pemasok' => $request->nama_pemasok
-        ]);
+//         $pemasok = Pemasok::create([
+//             'nama_pemasok' => $request->nama_pemasok
+//         ]);
     
-        return response()->json([
-            'success' => true,
-            'data' => $pemasok
-        ]);
-    }
+//         return response()->json([
+//             'success' => true,
+//             'data' => $pemasok
+//         ]);
+//     }
     
-    public function update(Request $request, $id) {
-        $request->validate([
-            'nama_pemasok' => 'required|string|max:255',
-        ]);
+//     public function update(Request $request, $id) {
+//         $request->validate([
+//             'nama_pemasok' => 'required|string|max:255',
+//         ]);
     
-        $pemasok = Pemasok::findOrFail($id);
-        $pemasok->update([
-            'nama_pemasok' => $request->nama_pemasok
-        ]);
+//         $pemasok = Pemasok::findOrFail($id);
+//         $pemasok->update([
+//             'nama_pemasok' => $request->nama_pemasok
+//         ]);
     
-        return response()->json([
-            'success' => true,
-            'data' => $pemasok
-        ]);
-    }
+//         return response()->json([
+//             'success' => true,
+//             'data' => $pemasok
+//         ]);
+//     }
     
-    public function destroy($id) {
-        $pemasok = Pemasok::findOrFail($id);
-        $pemasok->delete();
+//     public function destroy($id) {
+//         $pemasok = Pemasok::findOrFail($id);
+//         $pemasok->delete();
     
-        return response()->json([
-            'success' => true
-        ]);
-    }    
+//         return response()->json([
+//             'success' => true
+//         ]);
+//     }    
     
-}
+// }

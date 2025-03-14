@@ -1,4 +1,4 @@
-@extends('admin.layouts.base')
+{{-- @extends('admin.layouts.base')
 
 @section('title', 'Pemasok')
 
@@ -306,4 +306,4 @@
     });
 });
 </script>
-@endpush
+@endpush --}}

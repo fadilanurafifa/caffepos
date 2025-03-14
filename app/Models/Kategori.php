@@ -10,20 +10,14 @@ class Kategori extends Model
     use HasFactory;
 
     protected $table = 'kategori'; // Nama tabel
-    protected $fillable = ['nama_kategori']; // Kolom yang bisa diisi
 
-    public function barangs()
-    {
-        return $this->hasMany(Barang::class, 'kategori_id'); // Relasi ke model Barang
-    }
+    protected $fillable = [
+        'nama_kategori'
+    ]; 
     
     public function produk()
     {
         return $this->hasMany(Produk::class, 'kategori_id');
-    }
-    public function barang()
-    {
-        return $this->hasMany(Barang::class, 'kategori_id');
     }
 }
 

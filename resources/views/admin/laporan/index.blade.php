@@ -79,23 +79,29 @@
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $('#laporanTable').DataTable({
-            "language": {
-                "search": "Cari:",
-                "lengthMenu": "Tampilkan _MENU_ data per halaman",
-                "zeroRecords": "Tidak ada data yang ditemukan",
-                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "infoEmpty": "Tidak ada data tersedia",
-                "paginate": {
-                    "first": "Awal",
-                    "last": "Akhir",
-                    "next": "Selanjutnya",
-                    "previous": "Sebelumnya"
-                }
+   $(document).ready(function() {
+    var table = $('#laporanTable').DataTable({
+        "language": {
+            "search": "Cari:",
+            "lengthMenu": "Tampilkan _MENU_ data per halaman",
+            "zeroRecords": "Tidak ada data yang ditemukan",
+            "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            "infoEmpty": "Tidak ada data tersedia",
+            "paginate": {
+                "first": "Awal",
+                "last": "Akhir",
+                "next": "Selanjutnya",
+                "previous": "Sebelumnya"
             }
-        });
+        }
     });
+
+    // Menunggu elemen pencarian selesai dirender, lalu menambahkan placeholder
+    setTimeout(function() {
+        $('.dataTables_filter input').attr("placeholder", "Cari Menu...");
+    }, 100);
+});
+
 
     // Fungsi Cetak Laporan
     function cetakLaporan() {

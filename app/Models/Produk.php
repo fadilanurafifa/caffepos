@@ -10,12 +10,16 @@ class Produk extends Model
     use HasFactory;
 
     protected $table = 'produk';
-    protected $fillable = ['kategori_id', 'nama_produk', 'harga', 'foto', 'stok'];
-    
-    public function barang()
-    {
-        return $this->hasMany(Barang::class, 'produk_id');
-    }
+    public $timestamps = true;
+    protected $fillable = [
+        'kategori_id', 
+        'nama_produk',
+        'harga', 
+        'foto',
+        'stok', 
+        'created_at',
+        'updated_at'
+    ];
 
     public function kategori()
     {
@@ -29,6 +33,11 @@ class Produk extends Model
     public function detailPenjualan()
     {
         return $this->hasMany(DetailPenjualan::class, 'produk_id');
+    }
+
+    public function penjualan()
+    {
+        return $this->hasMany(Penjualan::class, 'produk_id');
     }
 
 }

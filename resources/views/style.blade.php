@@ -19,7 +19,6 @@
 }
 
 #kategoriTable th {
-    /* background-color: #343a40; Warna header AdminLTE */
     color: #333;
     text-align: center;
     padding: 12px;
