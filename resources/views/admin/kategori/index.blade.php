@@ -60,9 +60,17 @@
 </style>
 @endpush
 <div class="container">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="fas fa-folder"></i> Manajemen Kategori
-    </h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="h3 text-gray-800">
+                <i class="fas fa-fw fa-tags"></i> Manajemen Kategori
+            </h1>
+            <p class="text-muted">
+                <a href="{{ route('dashboard') }}" class="text-custom text-decoration-none">Home</a> / 
+                <a href="#" class="text-custom text-decoration-none">Manajemen Kategori</a>
+            </p>                
+        </div>
+    </div>    
     
     <div class="d-flex justify-content-end">
         <button class="btn btn-custom" data-toggle="modal" data-target="#tambahKategoriModal" style="width: 150px; margin-bottom: 15px; border-radius: 5px; margin-top: -55px;">
@@ -70,11 +78,6 @@
         </button>
     </div>        
     <div class="card table-container">
-        {{-- <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title">
-                <i class="fas fa-folder-open"></i> Data Kategori
-            </h3>
-        </div> --}}
         <div class="card-body">
             <div class="table-responsive">
                 <table id="kategoriTable" class="table table-bordered">

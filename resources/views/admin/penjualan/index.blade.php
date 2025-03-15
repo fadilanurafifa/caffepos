@@ -47,26 +47,32 @@
         border: 1px solid #ddd;
     }
     .custom-toast {
-    animation: slideInRight 0.5s ease-in-out; /* Animasi muncul dari kanan */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    padding: 10px 15px;
-    min-width: 280px; /* Ukuran lebih lebar agar tidak bertumpuk */
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(100px); /* Muncul dari kanan */
-        opacity: 0;
+        animation: slideInRight 0.5s ease-in-out; /* Animasi muncul dari kanan */
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        padding: 10px 15px;
+        min-width: 280px; /* Ukuran lebih lebar agar tidak bertumpuk */
     }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
 
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100px); /* Muncul dari kanan */
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    .divider {
+        height: 2px;
+        background-color: #ccc;
+        width: 100%;
+        margin: 20px 0;
+        margin-top: 5px;
+    }
     </style>
-@endpush
+    @endpush
     <div class="container">
             <!-- Toast Container -->
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
@@ -82,9 +88,18 @@
                 @endforeach
             </div>            
             
-        <h1 class="h3 mb-4 text-gray-800">
-            <i class="fas fa-shopping-cart"></i> Transaksi Penjualan
-        </h1>        
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 text-gray-800">
+                        <i class="fas fa-shopping-cart"></i> Transaksi Penjualan
+                    </h1>
+                    <p class="text-muted">
+                        <a href="{{ route('dashboard') }}" class="text-custom text-decoration-none">Home</a> / 
+                        <a href="#" class="text-custom text-decoration-none">Transaksi Penjualan</a>
+                    </p>                
+                </div>
+            </div>    
+            <div class="divider"></div>
         <!-- Pilih Tipe Pelanggan -->
         <div class="d-flex gap-4 w-100">
             <div class="flex-grow-1">
@@ -137,7 +152,7 @@
             </div>
         </div>
         <!-- Keranjang -->
-        <div class="card-container">
+        <div class="card-container" style="margin-bottom: 30px;">
             <h1 class="h3 mb-4 text-gray-800 ms-3">
                 <i class="bi bi-cart-check"></i> Keranjang
             </h1>

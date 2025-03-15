@@ -1,8 +1,17 @@
 @extends('admin.layouts.base')
 @section('title', 'Dashboard')
 @section('content')
-<h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
-
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="h3 text-gray-800">
+            Dashboard
+        </h1>
+        <p class="text-muted">
+            <a href="{{ route('dashboard') }}" class="text-custom text-decoration-none">Home</a> / 
+            <a href="#" class="text-custom text-decoration-none">Pages</a>
+        </p>                
+    </div>
+</div>    
 <div class="row">
     <!-- Member (Customer) Card -->
     <div class="col-lg-4 col-md-6 mb-4">

@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Penjualan;
 use App\Models\DetailPenjualan;
+use App\Models\Order;
 use App\Models\Pelanggan;
 use App\Models\Produk;
+use App\Models\User;
+use App\Notifications\OrderForChefNotification;
+use App\Notifications\PesananMasukChefNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -109,6 +113,5 @@ class PenjualanController extends Controller
     {
         $notifications = Auth::user()->notifications; // Ambil notifikasi kasir yang login
         return view('kasir.notifications', compact('notifications'));
-    }
-    
+    }    
 }

@@ -111,7 +111,9 @@
                             <input type="text" id="kembalian" class="form-control" readonly>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success w-100 mt-3"><i class="fas fa-check-circle"></i> Bayar Sekarang</button>
+                    <button type="submit" class="btn w-100 mt-3" style="background-color: #89AC46; border-color: #89AC46; color: white;">
+                        <i class="fas fa-check-circle"></i> Bayar Sekarang
+                    </button>                    
                 </form>
             @else
             <button class="btn btn-custom-success w-100 mt-3" disabled>

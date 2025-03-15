@@ -3,10 +3,44 @@
 @section('title', 'Laporan Penjualan')
 
 @section('content')
+@push('style')
+    <style>
+        @media print {
+    body * {
+        visibility: hidden;
+    }
+    #laporanArea, #laporanArea * {
+        visibility: visible;
+    }
+    #laporanArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    .btn {
+        display: none !important; /* Menyembunyikan tombol saat cetak */
+    }
+    }
+    </style>
+@endpush
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="fas fa-chart-bar"></i> Laporan Penjualan
-    </h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="h3 text-gray-800">
+                <i class="fas fa-chart-bar"></i> Laporan Penjualan
+            </h1>
+            <p class="text-muted">
+                <a href="{{ route('dashboard') }}" class="text-custom text-decoration-none">Home</a> / 
+                <a href="#" class="text-custom text-decoration-none">Laporan Penjualan</a>
+            </p>  
+        </div>
+
+        <!-- Tombol Download PDF -->
+        <button type="button" class="btn btn-danger btn-sm" onclick="cetakLaporan()">
+            <i class="fas fa-file-pdf"></i> Cetak Laporan
+        </button> 
+    </div>   
     <div class="card">
         <div class="card-body">
             <form method="GET" action="{{ route('admin.laporan.penjualan') }}" style="margin-bottom: 20px;">
@@ -25,10 +59,7 @@
                     <button type="submit" class="btn btn-sm d-flex align-items-center" 
                         style="background-color: #89AC46; border-color: #789C40; color: white;">
                         <i class="fas fa-filter me-1"></i> Filter
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="cetakLaporan()">
-                        <i class="fas fa-file-pdf"></i> Cetak PDF
-                    </button>
+                    </button>                   
                 </div>
             </form>
             
@@ -137,11 +168,16 @@
 </style>
 
 <script>
-    function cetakLaporan() {
-        let kategoriId = document.querySelector('[name="kategori_id"]').value;
-        let url = "{{ route('admin.laporan.cetak') }}?kategori_id=" + kategoriId;
-        window.location.href = url;
-    }
+  function cetakLaporan() {
+    let printContents = document.getElementById("laporanArea").innerHTML;
+    let originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+    location.reload(); // Refresh halaman setelah cetak untuk mengembalikan tampilan awal
+}
+
 </script>
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

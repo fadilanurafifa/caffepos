@@ -55,7 +55,7 @@
         justify-content: center;
     }
     .notification-dropdown {
-    width: 350px; /* Lebarkan dropdown agar lebih rapi */
+    width: 350px;
     border-radius: 10px;
 }
 
@@ -86,15 +86,15 @@
     display: block;
 }
 .notification-dropdown {
-    width: 400px; /* Lebarkan dropdown agar lebih luas */
-    max-height: 500px; /* Tambahkan batas tinggi jika banyak notifikasi */
-    overflow-y: auto; /* Tambahkan scroll jika notifikasi terlalu banyak */
+    width: 400px; 
+    max-height: 500px;
+    overflow-y: auto; 
     border-radius: 10px;
     padding: 10px;
 }
 
 .dropdown-header {
-    font-size: 16px; /* Perbesar ukuran teks header */
+    font-size: 16px; 
     font-weight: bold;
     text-transform: uppercase;
     padding: 10px;
@@ -104,11 +104,11 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 8px; /* Tambahkan padding agar lebih rapi */
+    padding: 10px 8px;
 }
 
 .notification-avatar {
-    width: 45px; /* Perbesar avatar */
+    width: 45px; 
     height: 45px;
     border-radius: 50%;
     object-fit: cover;
@@ -116,7 +116,7 @@
 
 .notification-text {
     flex: 1;
-    font-size: 14px; /* Perbesar teks */
+    font-size: 14px;
 }
 
 .notification-text small {
@@ -124,9 +124,9 @@
     font-size: 12px;
 }
 .notification-dropdown {
-    width: 400px !important;  /* Lebarkan dropdown */
-    max-height: 500px; /* Batasi tinggi untuk mencegah terlalu panjang */
-    overflow-y: auto; /* Tambahkan scroll jika notifikasi terlalu banyak */
+    width: 400px !important;  
+    max-height: 500px; 
+    overflow-y: auto;
     border-radius: 10px;
     padding: 10px;
 }
@@ -136,7 +136,7 @@
     font-weight: bold;
     text-transform: uppercase;
     padding: 10px;
-    background-color: #007bff; /* Warna biru seperti gambar */
+    background-color: #007bff; 
     color: white;
     border-radius: 8px;
 }
@@ -167,8 +167,8 @@
 }
 
 .notification-badge {
-    top: -5px !important;  /* Sesuaikan agar lebih dekat ke ikon */
-    right: -5px !important; /* Geser lebih dekat ke ikon */
+    top: 4px !important; 
+    right: 10px !important; 
     font-size: 10px;
     padding: 3px 6px;
     min-width: 16px;
@@ -178,11 +178,26 @@
     justify-content: center;
 }
 
+#accordionSidebar {
+    overflow-y: auto;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+}
 
+#accordionSidebar::-webkit-scrollbar {
+    display: none;
+}
+
+#content-wrapper {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 250px; 
+}
+
+.sidebar-toggled #content-wrapper {
+    margin-left: 0;
+}
     </style>
-
 </head>
-
 <body id="page-top">
 
     <!-- Page Wrapper -->
@@ -256,7 +271,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduk"
                 aria-expanded="true" aria-controls="collapseProduk">
-                <i class="fas fa-coffee"></i> <!-- Ganti ikon di sini -->
+                <i class="fas fa-fw fa-utensils"></i>
                 <span>Produk Menu</span>
             </a>            
                 <div id="collapseProduk" class="collapse" aria-labelledby="headingUtilities"
@@ -394,7 +409,7 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Login Screen</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
+                        {{-- <a class="collapse-item" href="login.html">Login</a> --}}
                         <a class="collapse-item cursor-pointer" href="#" 
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                          Logout
@@ -424,9 +439,9 @@
             <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
+            {{-- <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+            </div> --}}
 
         </ul>
         <!-- End of Sidebar -->
@@ -491,7 +506,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center position-relative" href="#" id="notifikasiDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span class="position-relative">
-                                    <i class="fas fa-bell fa-fw notification-icon"></i>
+                                    <i class="fas fa-bell fa-fw notification-icon me-2"></i>
                                     @if(Auth::user()->unreadNotifications->count() > 0)
                                         <span class="badge rounded-pill bg-danger position-absolute notification-badge">
                                             {{ Auth::user()->unreadNotifications->count() }}
@@ -504,28 +519,34 @@
                                 <li class="dropdown-header fw-bold text-white bg-primary p-2 rounded d-flex align-items-center">
                                     <i class="bi bi-app-indicator me-2"></i> STATUS NOTIFIKASI
                                 </li>                                
+                        
                                 @forelse(Auth::user()->unreadNotifications as $notification)
                                     <li class="notification-item d-flex align-items-center p-2">
-                                        <div class="notification-text">
-                                            <a href="#" class="dropdown-item text-wrap fw-bold text-dark">{{ $notification->data['message'] }}
-                                            <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                        <a href="#" class="dropdown-item d-flex align-items-center text-wrap fw-bold text-dark w-100">
+                                            <i class="bi bi-bell me-3 text-primary"></i> <!-- Ikon geser ke kiri -->
+                                            <div class="d-flex justify-content-between w-100">
+                                                <span class="flex-grow-1">{{ $notification->data['message'] }}</span>
+                                                <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                            </div>
                                         </a>
-                                        </div>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                 @empty
-                                    <li class="dropdown-item text-muted text-center">Tidak ada notifikasi</li>
+                                    <li class="dropdown-item text-muted text-center">
+                                        <i class="bi bi-info-circle me-2"></i> Tidak ada notifikasi
+                                    </li>
                                 @endforelse
                             
                                 <li class="text-center">
                                     <form action="{{ route('kasir.readNotifications') }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="dropdown-item text-primary">Tandai Semua Dibaca</button>
+                                        <button type="submit" class="dropdown-item d-flex align-items-center text-primary">
+                                            <i class="bi bi-check2-circle me-2"></i> Tandai Semua Dibaca
+                                        </button>
                                     </form>
                                 </li>
                             </ul>
-                            
-                        </li>
+                        </li>                                                
                         @endif
                         <!-- Nav Item - Messages -->
                         {{-- <li class="nav-item dropdown no-arrow mx-1">

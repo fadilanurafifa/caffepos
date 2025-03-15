@@ -3,6 +3,8 @@
 @section('title', 'Manajemen Produk')
 
 @section('content')
+<!-- Bootstrap Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 @include('style')
     <style>
         .produk-container {
@@ -165,18 +167,35 @@
         font-size: 13px; 
         height: 32px; 
     }
+        .divider {
+        height: 2px;
+        background-color: #ccc;
+        width: 100%;
+        margin: 20px 0;
+        margin-top: 5px;
+    }
     </style>
 
     <div class="container">
-        <h1 class="h3 mb-4 text-gray-800">
-            <i class="fas fa-box"></i> Manajemen Produk
-        </h1>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 text-gray-800">
+                    <i class="fas fa-fw fa-utensils"></i> Manajemen Produk
+                </h1>
+                <p class="text-muted">
+                    <a href="{{ route('dashboard') }}" class="text-custom text-decoration-none">Home</a> / 
+                    <a href="#" class="text-custom text-decoration-none">Manajemen Produk</a>
+                </p>                
+            </div>
+        </div>    
+
         <div class="d-flex justify-content-end">
         <button class="btn btn-customs" data-toggle="modal" data-target="#tambahProdukModal" style="width: 150px; margin-bottom: 15px; border-radius: 5px; margin-top: -55px;">
             <i class="fas fa-plus"></i> Tambah Produk
         </button>
 
         </div>
+        <div class="divider"></div>
         @if(session('success'))
         <script>
             Swal.fire({
@@ -189,7 +208,7 @@
         </script>
         @endif        
         <!-- Filter Kategori dan Input Pencarian (Sejajar) -->
-        <div class="row mb-2">
+        {{-- <div class="row mb-2">
             <div class="col-lg-9">
                 <div class="d-flex flex-wrap gap-2 align-items-center">
                     <!-- Filter Kategori -->
@@ -213,7 +232,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="row">
             <!-- Daftar Produk (Kiri) -->
             <div class="col-lg-12">
@@ -223,8 +242,7 @@
                             data-nama="{{ strtolower($prd->nama_produk) }}" data-harga="{{ $prd->harga }}"
                             data-foto="{{ asset('assets/produk_fotos/' . $prd->foto) }}"
                             data-kategori="{{ strtolower($prd->kategori ? $prd->kategori->nama_kategori : 'tanpa kategori') }}">
-            
-                            <div class="produk-card border-0 shadow-sm h-100" style="max-width: 120px;">
+                            <div class="card border-0 shadow-sm h-100" style="max-width: 120px;">
                                 <img src="{{ asset('assets/produk_fotos/' . $prd->foto) }}"
                                     class="card-img-top img-fluid rounded-top"
                                     style="height: 100px; object-fit: cover;">

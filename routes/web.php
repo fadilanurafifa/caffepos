@@ -137,11 +137,6 @@ Route::get('/laporan-produk', [LaporanProdukController::class, 'laporanProduk'])
 Route::get('/laporan-produk/pdf', [LaporanProdukController::class, 'cetakLaporanProduk'])->name('laporan.produk.pdf');
 });
 
-// promo
-Route::post('/checkout', [PenjualanController::class, 'checkout']);
-
-
 // halaman chef
 Route::get('/chef/orders', [ChefController::class, 'index'])->name('chef.index');
 Route::put('/chef/update-order/{id}', [ChefController::class, 'updateOrder'])->name('chef.updateOrder');
-

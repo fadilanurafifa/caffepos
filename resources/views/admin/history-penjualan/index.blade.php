@@ -44,20 +44,26 @@
     }
 </style>
 @endpush
-
-
 @section('content')
 <div class="container mt-4">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="fas fa-receipt"></i> Laporan Transaksi
-    </h1>    
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="h3 text-gray-800">
+                <i class="fas fa-receipt"></i> Laporan Transaksi
+            </h1>
+            <p class="text-muted">
+                <a href="{{ route('dashboard') }}" class="text-custom text-decoration-none">Home</a> / 
+                <a href="#" class="text-custom text-decoration-none">Laporan Transaksi</a>
+            </p>                
+        </div>
+    </div>       
     @php
     $totalIncome = $transaksi->where('status_pembayaran', 'lunas')->sum('total_bayar');
     @endphp
     
     <div class="d-flex justify-content-between align-items-center mb-4">
        <!-- Button Filter (Kiri) -->
-        <div class="d-flex gap-3">
+        <div class="d-flex gap-3" style="margin-top: -30px;">
             <button class="btn btn-custom d-flex align-items-center" onclick="filterTable('all')">
                 <i class="fas fa-list me-2"></i> Semua Transaksi
             </button>

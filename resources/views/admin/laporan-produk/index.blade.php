@@ -17,19 +17,23 @@
 
 @section('content')
 <div class="container mt-4">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="fas fa-folder"></i> Manajemen Kategori
-    </h1>
-
-   
-    <!-- Tombol Download PDF -->
-    <div class="d-flex justify-content-end mt-2">
-        <a href="{{ route('laporan.produk.pdf') }}" class="btn btn-danger btn-sm" role="button" style="display: inline-block; text-align: center; border: none; margin-bottom: 20px;">
-            <i class="fas fa-file-pdf"></i> Cetak PDF
-        </a>
-    </div>
+        <!-- Judul & Breadcrumb -->
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 text-gray-800">
+                    <i class="fas fa-clipboard-list"></i> Manajemen Produk
+                </h1>
+                <p class="text-muted">
+                    <a href="{{ route('dashboard') }}" class="text-custom text-decoration-none">Home</a> / 
+                    <a href="#" class="text-custom text-decoration-none">Manajemen Produk</a>
+                </p>                
+            </div>
     
-    
+            <!-- Tombol Download PDF -->
+            <a href="{{ route('laporan.produk.pdf') }}" target="_blank" class="btn btn-danger btn-sm">
+                <i class="fas fa-file-pdf"></i> Cetak PDF
+            </a>
+        </div>    
 
     <div class="card table-container">
         <div class="card-body">
@@ -73,28 +77,27 @@
 <script>
 $(document).ready(function() {
     $('#produkTable').DataTable({
-        "paging": true,
-        "lengthChange": true,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
+        // "paging": true,
+        // "lengthChange": true,
+        // "searching": true,
+        // "ordering": true,
+        // "info": true,
+        // "autoWidth": false,
         "language": {
-            "lengthMenu": "Tampilkan _MENU_ entri per halaman",
-            "zeroRecords": "Data tidak ditemukan",
-            "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-            "infoEmpty": "Tidak ada data tersedia",
-            "infoFiltered": "(disaring dari _MAX_ total entri)",
+            // "lengthMenu": "Tampilkan _MENU_ entri per halaman",
+            // "zeroRecords": "Data tidak ditemukan",
+            // "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+            // "infoEmpty": "Tidak ada data tersedia",
+            // "infoFiltered": "(disaring dari _MAX_ total entri)",
             "search": "Cari:",
-            "paginate": {
-                "first": "Pertama",
-                "last": "Terakhir",
-                "next": "Berikutnya",
-                "previous": "Sebelumnya"
-            }
+            // "paginate": {
+            //     "first": "Pertama",
+            //     "last": "Terakhir",
+            //     "next": "Berikutnya",
+            //     "previous": "Sebelumnya"
+            // }
         }
     });
 });
-
 </script>
 @endpush
