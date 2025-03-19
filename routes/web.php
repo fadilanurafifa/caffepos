@@ -53,30 +53,6 @@ Route::get('/admin/login', [AuthController::class, 'showLoginForm'])->name('admi
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
 Route::post('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout')->middleware('auth');
 
-// // barang 
-// Route::get('/admin/barang', [BarangController::class, 'index'])->name('barang.index');
-// Route::post('/admin/barang', [BarangController::class, 'store'])->name('barang.store');
-// Route::delete('/admin/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');
-
-// keranjang 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
-//     Route::post('/keranjang/{id}/add', [KeranjangController::class, 'addToCart'])->name('keranjang.add');
-//     Route::post('/checkout', [KeranjangController::class, 'checkout'])->name('checkout');
-//     Route::get('/pembayaran/{id}', [KeranjangController::class, 'showPembayaran'])->name('pembayaran.show');
-//     Route::post('/pembayaran/{id}/confirm', [KeranjangController::class, 'confirmPayment'])->name('pembayaran.confirm');
-// });
-
-// transaksi
-// Route::get('/admin/transaksi', [TransaksiController::class, 'index'])->name('admin.transaksi');
-// Route::get('/admin/transaksi/bayar/{id}', [TransaksiController::class, 'bayar'])->name('admin.transaksi.bayar');
-
-// // pemasok
-// Route::get('/pemasok', [PemasokController::class, 'index'])->name('pemasok.index');
-// Route::post('/pemasok', [PemasokController::class, 'store'])->name('pemasok.store');
-// Route::put('/pemasok/{id}', [PemasokController::class, 'update'])->name('pemasok.update');
-// Route::delete('/pemasok/{id}', [PemasokController::class, 'destroy'])->name('pemasok.destroy');
-
 // kategori
 Route::get('admin/kategori', [KategoriController::class, 'index'])->name('kategori.index');
 Route::post('admin/kategori', [KategoriController::class, 'store'])->name('kategori.store');
@@ -131,10 +107,11 @@ Route::get('/admin/history-penjualan', [HistoryPenjualanController::class, 'inde
 Route::get('/admin/laporan-penjualan', [LaporanPenjualanController::class, 'index'])->name('admin.laporan.penjualan');
 Route::get('/admin/laporan/cetak-pdf', [LaporanPenjualanController::class, 'cetakPDF'])->name('admin.laporan.cetak');
 Route::get('/laporan-transaksi/export-pdf', [LaporanPenjualanController::class, 'exportPdf'])->name('laporan.transaksi.pdf');
+Route::get('/cetak-laporan', [LaporanPenjualanController::class, 'cetakPDF'])->name('cetak.pdf');
 
 // laporan produk
 Route::get('/laporan-produk', [LaporanProdukController::class, 'laporanProduk'])->name('laporan.produk');
-Route::get('/laporan-produk/pdf', [LaporanProdukController::class, 'cetakLaporanProduk'])->name('laporan.produk.pdf');
+Route::get('/laporan-produk/cetak', [LaporanProdukController::class, 'cetakLaporanProduk'])->name('laporan.produk.pdf');
 });
 
 // halaman chef

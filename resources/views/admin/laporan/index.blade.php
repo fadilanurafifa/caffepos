@@ -38,8 +38,8 @@
 
         <!-- Tombol Download PDF -->
         <button type="button" class="btn btn-danger btn-sm" onclick="cetakLaporan()">
-            <i class="fas fa-file-pdf"></i> Cetak Laporan
-        </button> 
+            <i class="fas fa-print"></i> Cetak Laporan
+        </button>
     </div>   
     <div class="card">
         <div class="card-body">
@@ -168,17 +168,22 @@
 </style>
 
 <script>
-  function cetakLaporan() {
-    let printContents = document.getElementById("laporanArea").innerHTML;
-    let originalContents = document.body.innerHTML;
-
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    location.reload(); // Refresh halaman setelah cetak untuk mengembalikan tampilan awal
-}
-
+    function cetakLaporan() {
+        fetch("{{ route('cetak.pdf', ['kategori_id' => request()->kategori_id]) }}")
+            .then(response => response.text()) // Ambil HTML dari server
+            .then(html => {
+                let printWindow = window.open("", "_blank");
+                printWindow.document.write(html);
+                printWindow.document.close();
+                printWindow.onload = function () {
+                    printWindow.print(); // Langsung cetak
+                    setTimeout(() => printWindow.close(), 500); // Tutup setelah selesai
+                };
+            })
+            .catch(error => console.error("Gagal memuat laporan:", error));
+    }
 </script>
+
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

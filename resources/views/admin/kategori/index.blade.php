@@ -6,7 +6,7 @@
 @push('style')
 <style>
     .btn-custom {
-        background-color: #007bff; 
+        background-color: #89AC46; 
         color: white;
         border: none;
         padding: 8px 14px;
@@ -19,7 +19,7 @@
     .btn-custom:hover,
     .btn-custom:focus,
     .btn-custom:active {
-        background-color: #007bff !important; 
+        background-color: #89AC46 !important; 
         color: white !important; 
         box-shadow: none !important; 
         outline: none !important; 

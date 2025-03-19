@@ -1,100 +1,91 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\Penjualan;
 use App\Models\DetailPenjualan;
+use App\Models\Order;
+use App\Models\User;
+use App\Notifications\PesananKeChefNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class PembayaranController extends Controller
 {
-    public function show($no_faktur)
+    // Menampilkan detail transaksi berdasarkan no_faktur
+    public function show($no_faktur) 
     {
-        // Ambil transaksi berdasarkan no_faktur
-        $transaksi = Penjualan::where('no_faktur', $no_faktur)->first();
-    
-        // Jika transaksi tidak ditemukan, kembalikan error 
+        $transaksi = Penjualan::where('no_faktur', $no_faktur)->first(); // Ambil transaksi berdasarkan nomor faktur
+
         if (!$transaksi) {
-            return redirect()->route('admin.pembayaran.index')->with('error', 'Transaksi tidak ditemukan.');
+            return redirect()->route('admin.pembayaran.index')->with('error', 'Transaksi tidak ditemukan.'); // Redirect jika transaksi tidak ditemukan
         }
-    
-        // Ambil detail penjualan beserta data produk
-        $detail_penjualan = DetailPenjualan::with('produk')->where('penjualan_id', $transaksi->id)->get();
 
-        // dd($detail_penjualan);
+        $detail_penjualan = DetailPenjualan::with('produk')->where('penjualan_id', $transaksi->id)->get(); // Ambil detail transaksi dan produk terkait
 
-        return view('admin.pembayaran.show', compact('transaksi', 'detail_penjualan'));
+        return view('admin.pembayaran.show', compact('transaksi', 'detail_penjualan')); // Kirim data ke tampilan pembayaran
     }
-    
+
+    // Memproses pembayaran transaksi
     public function bayar(Request $request, $no_faktur)
     {
-        // Ambil transaksi berdasarkan no_faktur
-        $transaksi = Penjualan::where('no_faktur', $no_faktur)->first();
+        $transaksi = Penjualan::where('no_faktur', $no_faktur)->first(); // Cari transaksi berdasarkan nomor faktur
         
         if (!$transaksi) {
-            return redirect()->route('admin.pembayaran.index')->with('error', 'Transaksi tidak ditemukan.');
+            return redirect()->route('admin.pembayaran.index')->with('error', 'Transaksi tidak ditemukan.'); // Redirect jika transaksi tidak ditemukan
         }
-    
-        // Validasi input jumlah bayar
+
+        // Validasi jumlah bayar, harus lebih dari atau sama dengan total bayar
         $request->validate([
             'jumlah_bayar' => 'required|numeric|min:' . $transaksi->total_bayar,
         ]);
-    
-        $jumlah_bayar = $request->jumlah_bayar;
-        $kembalian = $jumlah_bayar - $transaksi->total_bayar;
-    
-        // Pastikan jumlah bayar cukup sebelum mengubah status menjadi lunas
+
+        $jumlah_bayar = $request->jumlah_bayar; // Ambil jumlah bayar dari input
+        $kembalian = $jumlah_bayar - $transaksi->total_bayar; // Hitung kembalian jika ada
+
+        // Jika jumlah bayar kurang dari total, kembalikan error
         if ($jumlah_bayar < $transaksi->total_bayar) {
             return redirect()->back()->with('error', 'Jumlah bayar kurang dari total yang harus dibayar.');
         }
-    
-        // Update status pembayaran
+
+        // Update status transaksi menjadi "lunas"
         $transaksi->update([
             'status_pembayaran' => 'lunas',
         ]);
-    
-        // Ambil semua detail penjualan terkait transaksi ini
+
+        // Ambil semua detail transaksi
         $detail_penjualan = DetailPenjualan::where('penjualan_id', $transaksi->id)->get();
-    
-        // Kurangi stok produk berdasarkan jumlah yang dibeli
+
+        // Kurangi stok produk sesuai jumlah yang dibeli
         foreach ($detail_penjualan as $detail) {
             $produk = $detail->produk;
             if ($produk) {
-                // Periksa apakah stok cukup sebelum menguranginya
                 if ($produk->stok >= $detail->jumlah) {
-                    $produk->stok -= $detail->jumlah;
-                    $produk->save();
+                    $produk->stok -= $detail->jumlah; // Kurangi stok
+                    $produk->save(); // Simpan perubahan
                 } else {
-                    return redirect()->back()->with('error', 'Stok tidak mencukupi untuk produk: ' . $produk->nama_produk);
+                    return redirect()->back()->with('error', 'Stok tidak mencukupi untuk produk: ' . $produk->nama_produk); // Jika stok tidak cukup, kembalikan error
                 }
             }
         }
-    
-        return redirect()->route('admin.pembayaran.show', $no_faktur)
-            ->with('success', 'Pembayaran berhasil! Stok produk telah diperbarui.')
-            ->with('jumlah_bayar', $jumlah_bayar)
+
+        return redirect()->route('admin.pembayaran.show', $no_faktur) // Redirect ke halaman pembayaran
+            ->with('success', 'Pembayaran berhasil! Stok produk telah diperbarui.') 
+            ->with('jumlah_bayar', $jumlah_bayar) 
             ->with('kembalian', $kembalian);
     }
+
+    // Mencetak struk pembayaran dalam tampilan HTML
     public function print($no_faktur)
     {
-        // Cari transaksi berdasarkan no_faktur di tabel penjualan
-        $transaksi = Penjualan::where('no_faktur', $no_faktur)->first();
+        $transaksi = Penjualan::where('no_faktur', $no_faktur)->first(); // Cari transaksi berdasarkan nomor faktur
     
-        // Jika transaksi tidak ditemukan, kembalikan error
         if (!$transaksi) {
-            return back()->with('error', 'Transaksi tidak ditemukan');
+            return back()->with('error', 'Transaksi tidak ditemukan'); // Redirect jika transaksi tidak ditemukan
         }
+
+        $detail_penjualan = DetailPenjualan::where('penjualan_id', $transaksi->id)->get(); // Ambil detail transaksi
     
-        // Ambil detail penjualan berdasarkan penjualan_id
-        $detail_penjualan = DetailPenjualan::where('penjualan_id', $transaksi->id)->get();
-    
-        // Kirim data ke view
-        return view('admin.pembayaran.struk', compact('transaksi', 'detail_penjualan'));
+        return view('admin.pembayaran.struk', compact('transaksi', 'detail_penjualan')); // Kirim data ke tampilan struk pembayaran
     }
-    
-    
-    
-    
 }
-
-

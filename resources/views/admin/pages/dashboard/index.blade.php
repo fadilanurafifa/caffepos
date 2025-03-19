@@ -93,7 +93,8 @@
     <div class="col-xl-12 col-lg-12">
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">STATISTIKA PENJUALAN</h6>
+                <h6 class="m-0 font-weight-bold text-dark">STATISTIKA PENJUALAN</h6>
+
             </div>
             <div class="card-body">
                 <canvas id="salesChart" style="height: 400px; width: 100%;"></canvas>
@@ -108,31 +109,27 @@
 <script>
     var ctx = document.getElementById('salesChart').getContext('2d');
 
-    // Buat efek gradient untuk garis chart
+    // Efek gradient biru dongker
     var gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(54, 162, 235, 0.5)');  // Warna awal (biru transparan)
-    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');   // Warna akhir (transparan)
+    gradient.addColorStop(0, 'rgba(0, 31, 63, 0.5)');  // Biru dongker transparan
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');   // Transparan
 
     var salesChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: {!! json_encode($months) !!}, // Data bulan dari Controller
+            labels: {!! json_encode($months) !!},
             datasets: [{
                 label: 'Total Penjualan',
-                data: {!! json_encode($salesByMonth) !!}, // Data penjualan dari DB
-                backgroundColor: gradient, // Efek gradient di area bawah garis
-                borderColor: 'rgba(54, 162, 235, 1)', // Warna garis
-                borderWidth: 3, // Ketebalan garis
-                pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Warna titik data
-                pointBorderColor: '#fff', // Border putih di titik data
-                pointRadius: 6, // Ukuran titik data
-                pointHoverRadius: 8, // Ukuran titik saat hover
-                fill: true, // Aktifkan efek area di bawah garis
-                tension: 0.3, // Membuat garis lebih melengkung
-                shadowOffsetX: 4, // Efek shadow
-                shadowOffsetY: 4,
-                shadowBlur: 10,
-                shadowColor: 'rgba(0, 0, 0, 0.2)',
+                data: {!! json_encode($salesByMonth) !!},
+                backgroundColor: gradient,
+                borderColor: 'rgba(0, 31, 63, 1)', // Biru dongker solid
+                borderWidth: 3,
+                pointBackgroundColor: 'rgba(0, 31, 63, 1)', // Titik biru dongker
+                pointBorderColor: '#fff',
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                fill: true,
+                tension: 0.3
             }]
         },
         options: {
@@ -140,41 +137,28 @@
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: true,
                     labels: {
-                        color: "#333",
-                        font: {
-                            size: 14,
-                            weight: "bold"
-                        }
+                        color: "#001f3f",
+                        font: { size: 14, weight: "bold" }
                     }
                 },
                 tooltip: {
-                    enabled: true,
-                    backgroundColor: "rgba(0,0,0,0.8)",
-                    titleFont: { size: 14, weight: "bold" },
-                    bodyFont: { size: 12 },
-                    padding: 10,
-                    cornerRadius: 8,
+                    backgroundColor: "rgba(0, 0, 0, 0.8)"
                 }
             },
             scales: {
                 x: {
-                    grid: {
-                        display: false
-                    },
                     ticks: {
-                        color: "#666",
+                        color: "#001f3f",
                         font: { size: 12, weight: "bold" }
                     }
                 },
                 y: {
-                    beginAtZero: true,
                     grid: {
-                        color: 'rgba(200, 200, 200, 0.2)'
+                        color: 'rgba(0, 31, 63, 0.2)' // Grid y-axis lebih redup
                     },
                     ticks: {
-                        color: "#666",
+                        color: "#001f3f",
                         font: { size: 12, weight: "bold" }
                     }
                 }

@@ -30,9 +30,9 @@
             </div>
     
             <!-- Tombol Download PDF -->
-            <a href="{{ route('laporan.produk.pdf') }}" target="_blank" class="btn btn-danger btn-sm">
-                <i class="fas fa-file-pdf"></i> Cetak PDF
-            </a>
+            <a href="{{ route('laporan.produk.pdf') }}" target="_blank" onclick="window.open(this.href, '_blank'); return false;" class="btn btn-danger btn-sm">
+                <i class="fas fa-print"></i> Cetak Laporan
+            </a>                 
         </div>    
 
     <div class="card table-container">
@@ -40,7 +40,7 @@
             <div class="table-responsive">
                 <table id="produkTable" class="table table-bordered">
                     <thead class="thead-light">
-                        <tr class="text-center">
+                        <tr>
                             <th>ID</th>
                             <th>Kategori ID</th>
                             <th>Nama Produk</th>
@@ -52,16 +52,16 @@
                     </thead>
                     <tbody>
                         @foreach($produk as $item)
-                        <tr class="text-center">
+                        <tr>
                             <td>{{ $item->id }}</td>
-                            <td>{{ $item->kategori_id }}</td>
+                            <td>{{ $item->kategori ? $item->kategori->nama_kategori : '-' }}</td> 
                             <td>{{ $item->nama_produk }}</td>
                             <td>Rp {{ number_format($item->harga, 2, ',', '.') }}</td>
                             <td>{{ $item->stok }}</td>
                             <td>{{ $item->created_at->format('d-m-Y H:i') }}</td>
                             <td>{{ $item->updated_at->format('d-m-Y H:i') }}</td>
                         </tr>
-                        @endforeach
+                        @endforeach                        
                     </tbody>
                 </table>
             </div>

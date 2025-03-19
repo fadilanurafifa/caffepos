@@ -39,6 +39,7 @@ class Produk extends Model
     {
         return $this->hasMany(Penjualan::class, 'produk_id');
     }
+    
 
 }
 

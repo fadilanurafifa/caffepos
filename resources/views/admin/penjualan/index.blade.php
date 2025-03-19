@@ -146,9 +146,9 @@
             <div class="input-group mt-2">
                 <span class="input-group-text"><i class="bi bi-cart-plus"></i></span>
                 <input type="number" id="jumlah" class="form-control" placeholder="Jumlah" min="1" value="1">
-                <button onclick="tambahProduk()" class="btn btn-primary">
+                <button onclick="tambahProduk()" class="btn" style="background-color: #34495e; color: white; border: none;">
                     <i class="bi bi-plus-lg"></i> Tambah Produk
-                </button>
+                </button>                
             </div>
         </div>
         <!-- Keranjang -->

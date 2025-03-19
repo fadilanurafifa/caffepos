@@ -715,9 +715,16 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('assets/js/sb-admin-2.min.js') }}"></script>
-
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        Echo.private('App.Models.User.{{ auth()->id() }}')
+            .notification((notification) => {
+                $('#notifList').prepend(`<a class="dropdown-item">${notification.message}</a>`);
+                let count = parseInt($('#notifCount').text()) + 1;
+                $('#notifCount').text(count);
+            });
+    </script>  
     @stack('script')
-
 </body>
 
 </html>

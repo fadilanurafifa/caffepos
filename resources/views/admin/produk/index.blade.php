@@ -90,16 +90,6 @@
             font-size: 12px;
             padding: 2px;
         }
-        /* .card-footer {
-            font-size: 14px;
-            padding: 10px;
-        }
-        .card-footer .btn {
-            font-size: 13px;
-            padding: 8px;
-            flex: 1;
-            white-space: nowrap;
-        } */
         .d-flex.gap-2 {
             display: flex;
             gap: 5px;
@@ -125,7 +115,7 @@
             max-width: 250px;
         }
         .btn-customs {
-        background-color: #007bff; 
+        background-color: #89AC46; 
         color: white;
         border: none;
         padding: 8px 14px;
@@ -138,7 +128,7 @@
     .btn-customs:hover,
     .btn-customs:focus,
     .btn-customs:active {
-        background-color: #007bff !important; 
+        background-color: #89AC46 !important; 
         color: white !important; 
         box-shadow: none !important; 
         outline: none !important; 

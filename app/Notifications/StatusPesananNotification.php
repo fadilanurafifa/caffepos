@@ -8,28 +8,30 @@ use Illuminate\Notifications\Messages\DatabaseMessage;
 
 class StatusPesananNotification extends Notification
 {
-    use Queueable;
+    use Queueable; // Memungkinkan notifikasi untuk dimasukkan ke dalam antrean (queue)
 
-    protected $order;
-    protected $status;
+    protected $order; // Variabel untuk menyimpan data pesanan
+    protected $status; // Variabel untuk menyimpan status pesanan
 
+    // Konstruktor untuk menerima data pesanan dan statusnya
     public function __construct($order, $status)
     {
-        $this->order = $order;
-        $this->status = $status;
+        $this->order = $order; // Menyimpan data pesanan ke variabel class
+        $this->status = $status; // Menyimpan status pesanan ke variabel class
     }
 
+    // Menentukan metode pengiriman notifikasi
     public function via($notifiable)
     {
-        return ['database']; // Simpan notifikasi di database
+        return ['database']; // Notifikasi akan disimpan di database
     }
 
+    // Menentukan data yang akan disimpan dalam notifikasi di database
     public function toArray($notifiable)
     {
         return [
-            'order_id' => $this->order->id,
-            'message' => "Pesanan #{$this->order->no_faktur} sekarang: {$this->status}"
+            'order_id' => $this->order->id, // Menyimpan ID pesanan
+            'message' => "Pesanan #{$this->order->no_faktur} sekarang: {$this->status}" // Pesan notifikasi
         ];
     }
 }
-
