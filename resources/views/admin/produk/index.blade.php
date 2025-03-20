@@ -197,36 +197,27 @@
             });
         </script>
         @endif        
-        <!-- Filter Kategori dan Input Pencarian (Sejajar) -->
-        {{-- <div class="row mb-2">
-            <div class="col-lg-9">
-                <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <!-- Filter Kategori -->
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-primary kategori-filter active" data-filter="all">Semua</button>
-                        @foreach ($kategori as $kat)
-                            <button class="btn btn-sm btn-outline-primary kategori-filter"
-                                data-filter="{{ strtolower($kat->nama_kategori) }}">
-                                {{ $kat->nama_kategori }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <!-- Input Filter Nama Produk -->
-                    <div class="input-group">
-                        <button class="btn btn-light border btn-custom" id="btnFilter">
-                            <i class="fas fa-filter"></i> Filter
+       <!-- Filter Kategori dan Input Pencarian -->
+       <div class="row mb-2" style="margin-bottom: 40px;">
+        <div class="col-lg-9">
+            <div class="d-flex flex-wrap gap-2 align-items-center" style="margin-bottom: 20px;">
+                <!-- Filter Kategori -->
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-primary kategori-filter active" data-filter="all">Semua</button>
+                    @foreach ($kategori as $kat)
+                        <button class="btn btn-sm btn-outline-primary kategori-filter"
+                            data-filter="{{ strtolower($kat->nama_kategori) }}">
+                            {{ $kat->nama_kategori }}
                         </button>
-                        <input type="text" id="searchProduk" class="form-control form-control-custom"
-                            placeholder="Cari produk...">
-                    </div>
+                    @endforeach
                 </div>
             </div>
-        </div> --}}
+        </div>
+    </div>
         <div class="row">
             <!-- Daftar Produk (Kiri) -->
             <div class="col-lg-12">
-                <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 g-2">
+                <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 g-2" style="margin-bottom: 50px;">
                     @foreach ($produk as $prd)
                         <div class="col" data-id="{{ $prd->id }}"
                             data-nama="{{ strtolower($prd->nama_produk) }}" data-harga="{{ $prd->harga }}"
@@ -262,7 +253,6 @@
             </div>
         </div>              
     </div>
-
     <div class="modal fade" id="editStokModal" tabindex="-1" aria-labelledby="editStokLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -342,64 +332,34 @@
 
 @push('script')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.getElementById('kategoriFilter').addEventListener('change', function() {
-            let selectedCategory = this.value.toLowerCase();
-            document.querySelectorAll('.produk-card').forEach(function(card) {
-                let cardCategory = card.getAttribute('data-kategori').toLowerCase();
-                if (selectedCategory === "" || cardCategory === selectedCategory) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const filterButtons = document.querySelectorAll(".kategori-filter");
-            const produkCards = document.querySelectorAll(".produk-card");
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const filterButtons = document.querySelectorAll(".kategori-filter");
+    const productCards = document.querySelectorAll(".col[data-kategori]");
 
-            filterButtons.forEach(button => {
-                button.addEventListener("click", function() {
-                    const filter = this.getAttribute("data-filter");
+    filterButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            const filterValue = this.getAttribute("data-filter");
 
-                    // Hapus class 'active' dari semua tombol dan tambahkan ke tombol yang diklik
-                    filterButtons.forEach(btn => btn.classList.remove("active", "btn-primary"));
-                    this.classList.add("active", "btn-primary");
-                    this.classList.remove("btn-outline-primary");
+            // Menghapus kelas 'active' dari semua tombol
+            filterButtons.forEach((btn) => btn.classList.remove("active"));
+            this.classList.add("active");
 
-                    // Loop semua produk dan filter berdasarkan kategori
-                    produkCards.forEach(card => {
-                        const kategori = card.getAttribute("data-kategori");
+            // Menampilkan atau menyembunyikan produk berdasarkan kategori
+            productCards.forEach((card) => {
+                const productCategory = card.getAttribute("data-kategori");
 
-                        if (filter === "all" || kategori === filter) {
-                            card.style.display = "block"; // Tampilkan produk yang sesuai
-                        } else {
-                            card.style.display =
-                            "none"; // Sembunyikan produk yang tidak sesuai
-                        }
-                    });
-                });
-            });
-        });
-    </script>
-    <script>
-        document.getElementById("searchProduk").addEventListener("keyup", function() {
-            let searchValue = this.value.toLowerCase();
-            let produkCards = document.querySelectorAll(".produk-card");
-
-            produkCards.forEach(function(card) {
-                let namaProduk = card.getAttribute("data-nama");
-
-                if (namaProduk.includes(searchValue)) {
+                if (filterValue === "all" || productCategory === filterValue) {
                     card.style.display = "block";
                 } else {
                     card.style.display = "none";
                 }
             });
         });
-    </script>
+    });
+});
+
+</script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

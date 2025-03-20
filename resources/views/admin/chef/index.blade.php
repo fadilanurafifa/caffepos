@@ -33,8 +33,8 @@
                 <i class="fas fa-clipboard-list"></i> Daftar Pesanan
             </h1>
             <p class="text-muted">
-                <a href="{{ route('dashboard') }}" class="text-custom text-decoration-none">Home</a> / 
-                <a href="#" class="text-custom text-decoration-none">Daftar Pesanan</a>
+                <a href="#" class="text-custom text-decoration-none">Home</a> / 
+                <a href="{{ route('chef.index') }}" class="text-custom text-decoration-none">Daftar Pesanan</a>
             </p>                
         </div>
     </div>            
